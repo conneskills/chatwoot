@@ -10,6 +10,7 @@ class V2::Reports::BaseSummaryBuilder
 
   def load_data
     @conversations_count = fetch_conversations_count
+    @outgoing_messages_count = fetch_outgoing_messages_count
     load_reporting_events_data
   end
 
@@ -39,6 +40,10 @@ class V2::Reports::BaseSummaryBuilder
   end
 
   def fetch_conversations_count
+    # Override this method
+  end
+
+  def fetch_outgoing_messages_count
     # Override this method
   end
 

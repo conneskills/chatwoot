@@ -28,6 +28,7 @@ class V2::Reports::LabelSummaryBuilder < V2::Reports::BaseSummaryBuilder
 
     {
       conversation_counts: fetch_conversation_counts(conversation_filter),
+      outgoing_messages_counts: fetch_outgoing_messages_count,
       resolved_counts: fetch_resolved_counts,
       resolution_metrics: fetch_metrics(conversation_filter, 'conversation_resolved', use_business_hours),
       first_response_metrics: fetch_metrics(conversation_filter, 'first_response', use_business_hours),
@@ -40,6 +41,7 @@ class V2::Reports::LabelSummaryBuilder < V2::Reports::BaseSummaryBuilder
       id: label.id,
       name: label.title,
       conversations_count: report_data[:conversation_counts][label.title] || 0,
+      outgoing_messages_count: report_data[:outgoing_messages_counts][label.title] || 0,
       avg_resolution_time: report_data[:resolution_metrics][label.title] || 0,
       avg_first_response_time: report_data[:first_response_metrics][label.title] || 0,
       avg_reply_time: report_data[:reply_metrics][label.title] || 0,
@@ -60,6 +62,19 @@ class V2::Reports::LabelSummaryBuilder < V2::Reports::BaseSummaryBuilder
 
   def fetch_conversation_counts(conversation_filter)
     fetch_counts(conversation_filter)
+  end
+
+  def fetch_outgoing_messages_count
+    Message.unscope(:order)
+           .joins(conversation: { taggings: :tag })
+           .where(
+             account_id: account.id,
+             created_at: range,
+             message_type: :outgoing,
+             taggings: { taggable_type: 'Conversation', context: 'labels' }
+           )
+           .group('tags.name')
+           .count
   end
 
   def fetch_resolved_counts

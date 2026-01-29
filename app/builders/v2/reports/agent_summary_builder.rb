@@ -8,11 +8,15 @@ class V2::Reports::AgentSummaryBuilder < V2::Reports::BaseSummaryBuilder
 
   private
 
-  attr_reader :conversations_count, :resolved_count,
+  attr_reader :conversations_count, :outgoing_messages_count, :resolved_count,
               :avg_resolution_time, :avg_first_response_time, :avg_reply_time
 
   def fetch_conversations_count
     account.conversations.where(created_at: range).group('assignee_id').count
+  end
+
+  def fetch_outgoing_messages_count
+    account.messages.unscope(:order).where(created_at: range, message_type: :outgoing).joins(:conversation).group('conversations.assignee_id').count
   end
 
   def prepare_report
@@ -26,6 +30,7 @@ class V2::Reports::AgentSummaryBuilder < V2::Reports::BaseSummaryBuilder
     {
       id: user_id,
       conversations_count: conversations_count[user_id] || 0,
+      outgoing_messages_count: outgoing_messages_count[user_id] || 0,
       resolved_conversations_count: resolved_count[user_id] || 0,
       avg_resolution_time: avg_resolution_time[user_id],
       avg_first_response_time: avg_first_response_time[user_id],
