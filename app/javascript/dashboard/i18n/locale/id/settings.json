@@ -273,7 +273,8 @@
     "FILE_BUBBLE": {
       "DOWNLOAD": "Unduh",
       "UPLOADING": "Mengunggah...",
-      "INSTAGRAM_STORY_UNAVAILABLE": "Cerita ini tidak lagi tersedia."
+      "INSTAGRAM_STORY_UNAVAILABLE": "Cerita ini tidak lagi tersedia.",
+      "INSTAGRAM_STORY_REPLY": "Membalas cerita Anda:"
     },
     "LOCATION_BUBBLE": {
       "SEE_ON_MAP": "Lihat di peta"
