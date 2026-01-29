@@ -61,6 +61,7 @@
     "UNSUPPORTED_MESSAGE": "This message is unsupported. You can view this message on the Facebook / Instagram app.",
     "UNSUPPORTED_MESSAGE_FACEBOOK": "Aquest missatge no està suportat. Pots veure aquest missatge a l'aplicació Facebook Messenger.",
     "UNSUPPORTED_MESSAGE_INSTAGRAM": "Aquest missatge no està suportat. Pots veure aquest missatge a l'aplicació d'Instagram.",
+    "UNSUPPORTED_MESSAGE_TIKTOK": "This message is unsupported. You can view this message on the TikTok app.",
     "SUCCESS_DELETE_MESSAGE": "El missatge s'ha suprimit correctament",
     "FAIL_DELETE_MESSSAGE": "No s'ha pogut suprimir el missatge! Torna-ho a provar",
     "NO_RESPONSE": "Sense resposta",
