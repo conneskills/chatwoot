@@ -273,7 +273,8 @@
     "FILE_BUBBLE": {
       "DOWNLOAD": "Download",
       "UPLOADING": "Nalaganje...",
-      "INSTAGRAM_STORY_UNAVAILABLE": "Ta zgodba ni več na voljo."
+      "INSTAGRAM_STORY_UNAVAILABLE": "Ta zgodba ni več na voljo.",
+      "INSTAGRAM_STORY_REPLY": "Replied to your story:"
     },
     "LOCATION_BUBBLE": {
       "SEE_ON_MAP": "See on map"
