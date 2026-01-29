@@ -273,7 +273,8 @@
     "FILE_BUBBLE": {
       "DOWNLOAD": "Звантажити",
       "UPLOADING": "Завантажується...",
-      "INSTAGRAM_STORY_UNAVAILABLE": "Ця історія більше не доступна."
+      "INSTAGRAM_STORY_UNAVAILABLE": "Ця історія більше не доступна.",
+      "INSTAGRAM_STORY_REPLY": "Відповів(-ла) на вашу історію:"
     },
     "LOCATION_BUBBLE": {
       "SEE_ON_MAP": "Дивитись на карті"
