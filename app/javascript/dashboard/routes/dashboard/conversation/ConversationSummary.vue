@@ -1,6 +1,7 @@
 <script setup>
 import { ref, computed, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useStore, useMapGetter } from 'dashboard/composables/store';
 import { useAccount } from 'dashboard/composables/useAccount';
 import { useMessageFormatter } from 'shared/composables/useMessageFormatter';
 import { FEATURE_FLAGS } from 'dashboard/featureFlags';
@@ -16,35 +17,56 @@ const props = defineProps({
 });
 
 const { t } = useI18n();
+const store = useStore();
 const { isCloudFeatureEnabled } = useAccount();
 const { formatMessage } = useMessageFormatter();
 
+const currentChat = useMapGetter('getSelectedChat');
 const isLoading = ref(false);
-const summary = ref('');
 const error = ref('');
-const hasFetched = ref(false);
 
 const captainTasksEnabled = computed(() => {
   return isCloudFeatureEnabled(FEATURE_FLAGS.CAPTAIN_TASKS);
 });
 
-const formattedSummary = computed(() => {
-  return summary.value ? formatMessage(summary.value) : '';
+const cachedSummary = computed(() => currentChat.value?.cached_summary || '');
+const cachedSummaryAt = computed(
+  () => currentChat.value?.cached_summary_at || 0
+);
+const lastActivityAt = computed(() => currentChat.value?.last_activity_at || 0);
+
+const isStale = computed(() => {
+  if (!cachedSummaryAt.value) return true;
+  return lastActivityAt.value > cachedSummaryAt.value;
 });
 
-const fetchSummary = async () => {
-  if (!captainTasksEnabled.value || hasFetched.value) return;
+const hasSummary = computed(() => !!cachedSummary.value);
+
+const formattedSummary = computed(() => {
+  return cachedSummary.value ? formatMessage(cachedSummary.value) : '';
+});
+
+const fetchSummary = async (forceRegenerate = false) => {
+  if (!captainTasksEnabled.value) return;
 
   isLoading.value = true;
   error.value = '';
-  hasFetched.value = true;
 
   try {
-    const result = await TasksAPI.summarize(props.conversationId);
+    const result = await TasksAPI.summarize(props.conversationId, {
+      forceRegenerate,
+    });
     const {
-      data: { message: generatedMessage },
+      data: { message: generatedSummary },
     } = result;
-    summary.value = generatedMessage || '';
+
+    if (generatedSummary) {
+      store.dispatch('updateConversationCachedSummary', {
+        conversationId: currentChat.value.id,
+        cachedSummary: generatedSummary,
+        cachedSummaryAt: Math.floor(Date.now() / 1000),
+      });
+    }
   } catch (e) {
     if (e.name !== 'AbortError' && e.name !== 'CanceledError') {
       error.value =
@@ -55,18 +77,11 @@ const fetchSummary = async () => {
   }
 };
 
-const refetch = () => {
-  hasFetched.value = false;
-  summary.value = '';
-  error.value = '';
-  fetchSummary();
-};
+const regenerate = () => fetchSummary(true);
 
 watch(
   () => props.conversationId,
   () => {
-    hasFetched.value = false;
-    summary.value = '';
     error.value = '';
   }
 );
@@ -74,6 +89,8 @@ watch(
 defineExpose({
   fetchSummary,
   captainTasksEnabled,
+  cachedSummary,
+  isStale,
 });
 </script>
 
@@ -90,11 +107,11 @@ defineExpose({
         size="sm"
         variant="link"
         class="ml-2"
-        @click="refetch"
+        @click="() => fetchSummary(true)"
       />
     </div>
 
-    <div v-else-if="!hasFetched" class="flex flex-col items-center gap-3 py-2">
+    <div v-else-if="!hasSummary" class="flex flex-col items-center gap-3 py-2">
       <p class="text-sm text-n-slate-11 text-center mb-0">
         {{ t('CONVERSATION_SIDEBAR.SUMMARY.DESCRIPTION') }}
       </p>
@@ -102,49 +119,37 @@ defineExpose({
         :label="t('CONVERSATION_SIDEBAR.SUMMARY.GENERATE')"
         icon="i-material-symbols-auto-awesome"
         size="sm"
-        @click="fetchSummary"
+        @click="() => fetchSummary(false)"
       />
     </div>
 
-    <div
-      v-else-if="summary"
-      class="summary-content text-sm text-n-slate-11 animate-fade-in [&_ul]:list-disc [&_ul]:pl-4 [&_ol]:list-decimal [&_ol]:pl-4 [&_li]:my-1 [&_p]:my-2 [&_p:first-child]:mt-0 [&_p:last-child]:mb-0 [&_strong]:text-n-slate-12"
-      v-html="formattedSummary"
-    />
-
-    <div v-else class="text-sm text-n-slate-11 py-2">
-      {{ t('CONVERSATION_SIDEBAR.SUMMARY.EMPTY') }}
-    </div>
-
-    <div
-      v-if="hasFetched && !isLoading && !error"
-      class="mt-3 pt-3 border-t border-n-weak"
-    >
-      <Button
-        :label="t('CONVERSATION_SIDEBAR.SUMMARY.REGENERATE')"
-        icon="i-lucide-refresh-cw"
-        size="sm"
-        variant="faded"
-        color="slate"
-        @click="refetch"
+    <template v-else>
+      <div
+        v-if="isStale"
+        class="flex items-center gap-2 mb-2 text-xs text-n-amber-11"
+      >
+        <span>{{ t('CONVERSATION_SIDEBAR.SUMMARY.STALE') }}</span>
+        <Button
+          :label="t('CONVERSATION_SIDEBAR.SUMMARY.REFRESH')"
+          size="xs"
+          variant="link"
+          @click="regenerate"
+        />
+      </div>
+      <div
+        class="summary-content text-sm text-n-slate-11 [&_ul]:list-disc [&_ul]:pl-4 [&_ol]:list-decimal [&_ol]:pl-4 [&_li]:my-1 [&_p]:my-2 [&_p:first-child]:mt-0 [&_p:last-child]:mb-0 [&_strong]:text-n-slate-12"
+        v-html="formattedSummary"
       />
-    </div>
+      <div class="mt-3 pt-3 border-t border-n-weak">
+        <Button
+          :label="t('CONVERSATION_SIDEBAR.SUMMARY.REGENERATE')"
+          icon="i-lucide-refresh-cw"
+          size="sm"
+          variant="faded"
+          color="slate"
+          @click="regenerate"
+        />
+      </div>
+    </template>
   </div>
 </template>
-
-<style scoped>
-.animate-fade-in {
-  animation: fadeIn 0.3s ease-in-out;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-4px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-</style>

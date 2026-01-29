@@ -350,7 +350,7 @@ const deleteConversation = () => {
         :class="showMetaSection ? 'top-8' : 'top-4'"
       >
         <div class="flex items-center gap-1 ml-auto">
-          <ConversationSummary ref="summaryRef" :conversation-id="chat.id" />
+          <ConversationSummary ref="summaryRef" :chat="chat" />
           <span class="font-normal leading-4 text-xxs">
             <TimeAgo
               :last-activity-timestamp="chat.timestamp"

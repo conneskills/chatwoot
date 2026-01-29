@@ -359,7 +359,9 @@
       "DESCRIPTION": "Generate an AI-powered summary of this conversation",
       "GENERATE": "Generate Summary",
       "REGENERATE": "Regenerate",
+      "REFRESH": "Refresh",
       "RETRY": "Retry",
+      "STALE": "Summary may be outdated",
       "ERROR": "Failed to generate summary",
       "EMPTY": "No summary available"
     },
