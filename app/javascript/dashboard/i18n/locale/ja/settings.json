@@ -273,7 +273,8 @@
     "FILE_BUBBLE": {
       "DOWNLOAD": "ダウンロード",
       "UPLOADING": "アップロード中...",
-      "INSTAGRAM_STORY_UNAVAILABLE": "このストーリーはもう利用できません。"
+      "INSTAGRAM_STORY_UNAVAILABLE": "このストーリーはもう利用できません。",
+      "INSTAGRAM_STORY_REPLY": "あなたのストーリーに返信:"
     },
     "LOCATION_BUBBLE": {
       "SEE_ON_MAP": "地図で見る"
