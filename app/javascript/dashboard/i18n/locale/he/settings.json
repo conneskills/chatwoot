@@ -273,7 +273,8 @@
     "FILE_BUBBLE": {
       "DOWNLOAD": "הורד",
       "UPLOADING": "מעלה...",
-      "INSTAGRAM_STORY_UNAVAILABLE": "הסיפור הזה כבר לא זמין."
+      "INSTAGRAM_STORY_UNAVAILABLE": "הסיפור הזה כבר לא זמין.",
+      "INSTAGRAM_STORY_REPLY": "השיב/ה לסטורי שלך:"
     },
     "LOCATION_BUBBLE": {
       "SEE_ON_MAP": "ראה במפה"
