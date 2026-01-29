@@ -1,3 +1,5 @@
+import { useCamelCase } from 'dashboard/composables/useTransformKeys';
+
 /**
  * Formats seconds into a human-readable time string
  * @param {number} seconds - The time in seconds (can be negative for overdue)
@@ -47,16 +49,14 @@ export const evaluateSLAStatus = ({ appliedSla, chat }) => {
     return emptyStatus;
   }
 
+  const sla = useCamelCase(appliedSla);
+  const conversation = useCamelCase(chat);
   const currentTime = Math.floor(Date.now() / 1000);
   const slaStatuses = [];
 
   // Check FRT - only if first reply hasn't been made
-  const frtDueAt = appliedSla.sla_frt_due_at || appliedSla.slaFrtDueAt;
-  const firstReplyCreatedAt =
-    chat.first_reply_created_at || chat.firstReplyCreatedAt;
-
-  if (frtDueAt && !firstReplyCreatedAt) {
-    const threshold = frtDueAt - currentTime;
+  if (sla.slaFrtDueAt && !conversation.firstReplyCreatedAt) {
+    const threshold = sla.slaFrtDueAt - currentTime;
     slaStatuses.push({
       type: 'FRT',
       threshold,
@@ -66,11 +66,12 @@ export const evaluateSLAStatus = ({ appliedSla, chat }) => {
   }
 
   // Check NRT - only if first reply made and waiting for response
-  const nrtDueAt = appliedSla.sla_nrt_due_at || appliedSla.slaNrtDueAt;
-  const waitingSince = chat.waiting_since || chat.waitingSince;
-
-  if (nrtDueAt && firstReplyCreatedAt && waitingSince) {
-    const threshold = nrtDueAt - currentTime;
+  if (
+    sla.slaNrtDueAt &&
+    conversation.firstReplyCreatedAt &&
+    conversation.waitingSince
+  ) {
+    const threshold = sla.slaNrtDueAt - currentTime;
     slaStatuses.push({
       type: 'NRT',
       threshold,
@@ -80,11 +81,8 @@ export const evaluateSLAStatus = ({ appliedSla, chat }) => {
   }
 
   // Check RT - only if conversation is open
-  const rtDueAt = appliedSla.sla_rt_due_at || appliedSla.slaRtDueAt;
-  const status = chat.status;
-
-  if (rtDueAt && status === 'open') {
-    const threshold = rtDueAt - currentTime;
+  if (sla.slaRtDueAt && conversation.status === 'open') {
+    const threshold = sla.slaRtDueAt - currentTime;
     slaStatuses.push({
       type: 'RT',
       threshold,
