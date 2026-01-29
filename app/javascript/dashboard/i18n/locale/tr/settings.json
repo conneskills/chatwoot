@@ -273,7 +273,8 @@
     "FILE_BUBBLE": {
       "DOWNLOAD": "İndir",
       "UPLOADING": "Yükleniyor...",
-      "INSTAGRAM_STORY_UNAVAILABLE": "Bu hikaye artık mevcut değil."
+      "INSTAGRAM_STORY_UNAVAILABLE": "Bu hikaye artık mevcut değil.",
+      "INSTAGRAM_STORY_REPLY": "Hikayene cevap verildi:"
     },
     "LOCATION_BUBBLE": {
       "SEE_ON_MAP": "Haritada Görüntüle"
