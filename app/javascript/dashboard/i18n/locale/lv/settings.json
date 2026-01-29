@@ -273,7 +273,8 @@
     "FILE_BUBBLE": {
       "DOWNLOAD": "Lejupielādēt",
       "UPLOADING": "Notiek augšupielāde...",
-      "INSTAGRAM_STORY_UNAVAILABLE": "Šis stāsts vairs nav pieejams."
+      "INSTAGRAM_STORY_UNAVAILABLE": "Šis stāsts vairs nav pieejams.",
+      "INSTAGRAM_STORY_REPLY": "Atbildēja uz Jūsu stāstu:"
     },
     "LOCATION_BUBBLE": {
       "SEE_ON_MAP": "Skatīt kartē"
