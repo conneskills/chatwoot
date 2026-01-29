@@ -273,7 +273,8 @@
     "FILE_BUBBLE": {
       "DOWNLOAD": "Скачать",
       "UPLOADING": "Загружаем...",
-      "INSTAGRAM_STORY_UNAVAILABLE": "Эта история больше недоступна."
+      "INSTAGRAM_STORY_UNAVAILABLE": "Эта история больше недоступна.",
+      "INSTAGRAM_STORY_REPLY": "Ответил на вашу историю:"
     },
     "LOCATION_BUBBLE": {
       "SEE_ON_MAP": "Просмотреть на карте"
