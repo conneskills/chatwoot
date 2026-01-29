@@ -273,7 +273,8 @@
     "FILE_BUBBLE": {
       "DOWNLOAD": "Download",
       "UPLOADING": "Uploader...",
-      "INSTAGRAM_STORY_UNAVAILABLE": "Denne historie er ikke længere tilgængelig."
+      "INSTAGRAM_STORY_UNAVAILABLE": "Denne historie er ikke længere tilgængelig.",
+      "INSTAGRAM_STORY_REPLY": "Replied to your story:"
     },
     "LOCATION_BUBBLE": {
       "SEE_ON_MAP": "Se på kort"
