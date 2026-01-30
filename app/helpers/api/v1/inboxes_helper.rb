@@ -57,9 +57,18 @@ module Api::V1::InboxesHelper
   end
 
   def check_smtp_connection(channel_data, smtp)
+    smtp.open_timeout = 10
     smtp.start(channel_data[:smtp_domain], channel_data[:smtp_login], channel_data[:smtp_password],
                channel_data[:smtp_authentication]&.to_sym || :login)
     smtp.finish
+  rescue Net::SMTPAuthenticationError
+    raise StandardError, I18n.t('errors.inboxes.smtp.authentication_error')
+  rescue SocketError, Errno::ECONNREFUSED, Errno::EHOSTUNREACH, Net::OpenTimeout
+    raise StandardError, I18n.t('errors.inboxes.smtp.connection_error')
+  rescue OpenSSL::SSL::SSLError
+    raise StandardError, I18n.t('errors.inboxes.smtp.ssl_error')
+  rescue Net::SMTPServerBusy, Net::SMTPSyntaxError, Net::SMTPFatalError
+    raise StandardError, I18n.t('errors.inboxes.smtp.smtp_error')
   end
 
   def set_smtp_encryption(channel_data, smtp)
