@@ -121,7 +121,7 @@ pt:
       stripe_customer_not_configured: Stripe customer not configured
       no_payment_method: No payment methods found. Please add a payment method before making a purchase.
     reports:
-      date_range_too_long: Date range cannot exceed 6 months
+      date_range_too_long: Intervalo de datas não pode exceder 6 meses
   profile:
     mfa:
       enabled: MFA enabled successfully
