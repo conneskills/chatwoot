@@ -70,11 +70,6 @@ const columns = computed(() => [
     width: 200,
     cell: defaulSpanRender,
   }),
-  columnHelper.accessor('outgoingMessagesCount', {
-    header: t('SUMMARY_REPORTS.OUTGOING_MESSAGES'),
-    width: 200,
-    cell: defaulSpanRender,
-  }),
   columnHelper.accessor('avgFirstResponseTime', {
     header: t('SUMMARY_REPORTS.AVG_FIRST_RESPONSE_TIME'),
     width: 200,
@@ -106,7 +101,6 @@ const tableData = computed(() =>
     const rowMetrics = getMetrics(row.id);
     const {
       conversationsCount,
-      outgoingMessagesCount,
       avgFirstResponseTime,
       avgResolutionTime,
       avgReplyTime,
@@ -118,7 +112,6 @@ const tableData = computed(() =>
       name: row.name ?? row.title,
       type: props.type,
       conversationsCount: renderCount(conversationsCount),
-      outgoingMessagesCount: renderCount(outgoingMessagesCount),
       avgFirstResponseTime: renderAvgTime(avgFirstResponseTime),
       avgReplyTime: renderAvgTime(avgReplyTime),
       avgResolutionTime: renderAvgTime(avgResolutionTime),

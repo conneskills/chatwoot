@@ -148,7 +148,6 @@ en:
     agent_csv:
       agent_name: Agent name
       conversations_count: Assigned conversations
-      outgoing_messages_count: Outgoing messages count
       avg_first_response_time: Avg first response time
       avg_resolution_time: Avg resolution time
       resolution_count: Resolution Count
@@ -157,13 +156,11 @@ en:
       inbox_name: Inbox name
       inbox_type: Inbox type
       conversations_count: No. of conversations
-      outgoing_messages_count: Outgoing messages count
       avg_first_response_time: Avg first response time
       avg_resolution_time: Avg resolution time
     label_csv:
       label_title: Label
       conversations_count: No. of conversations
-      outgoing_messages_count: Outgoing messages count
       avg_first_response_time: Avg first response time
       avg_resolution_time: Avg resolution time
       avg_reply_time: Avg reply time
@@ -171,7 +168,6 @@ en:
     team_csv:
       team_name: Team name
       conversations_count: Conversations count
-      outgoing_messages_count: Outgoing messages count
       avg_first_response_time: Avg first response time
       avg_resolution_time: Avg resolution time
       resolution_count: Resolution Count

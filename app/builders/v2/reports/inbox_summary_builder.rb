@@ -8,21 +8,16 @@ class V2::Reports::InboxSummaryBuilder < V2::Reports::BaseSummaryBuilder
 
   private
 
-  attr_reader :conversations_count, :outgoing_messages_count, :resolved_count,
+  attr_reader :conversations_count, :resolved_count,
               :avg_resolution_time, :avg_first_response_time, :avg_reply_time
 
   def load_data
     @conversations_count = fetch_conversations_count
-    @outgoing_messages_count = fetch_outgoing_messages_count
     load_reporting_events_data
   end
 
   def fetch_conversations_count
     account.conversations.where(created_at: range).group(group_by_key).count
-  end
-
-  def fetch_outgoing_messages_count
-    account.messages.unscope(:order).where(created_at: range, message_type: :outgoing).group(:inbox_id).count
   end
 
   def prepare_report
@@ -35,7 +30,6 @@ class V2::Reports::InboxSummaryBuilder < V2::Reports::BaseSummaryBuilder
     {
       id: inbox.id,
       conversations_count: conversations_count[inbox.id] || 0,
-      outgoing_messages_count: outgoing_messages_count[inbox.id] || 0,
       resolved_conversations_count: resolved_count[inbox.id] || 0,
       avg_resolution_time: avg_resolution_time[inbox.id],
       avg_first_response_time: avg_first_response_time[inbox.id],

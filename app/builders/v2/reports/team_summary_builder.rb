@@ -3,15 +3,11 @@ class V2::Reports::TeamSummaryBuilder < V2::Reports::BaseSummaryBuilder
 
   private
 
-  attr_reader :conversations_count, :outgoing_messages_count, :resolved_count,
+  attr_reader :conversations_count, :resolved_count,
               :avg_resolution_time, :avg_first_response_time, :avg_reply_time
 
   def fetch_conversations_count
     account.conversations.where(created_at: range).group(:team_id).count
-  end
-
-  def fetch_outgoing_messages_count
-    account.messages.unscope(:order).where(created_at: range, message_type: :outgoing).joins(:conversation).group('conversations.team_id').count
   end
 
   def reporting_events
@@ -28,7 +24,6 @@ class V2::Reports::TeamSummaryBuilder < V2::Reports::BaseSummaryBuilder
     {
       id: team.id,
       conversations_count: conversations_count[team.id] || 0,
-      outgoing_messages_count: outgoing_messages_count[team.id] || 0,
       resolved_conversations_count: resolved_count[team.id] || 0,
       avg_resolution_time: avg_resolution_time[team.id],
       avg_first_response_time: avg_first_response_time[team.id],

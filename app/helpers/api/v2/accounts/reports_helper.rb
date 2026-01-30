@@ -72,7 +72,6 @@ module Api::V2::Accounts::ReportsHelper
   def generate_readable_report_metrics(report)
     [
       report[:conversations_count],
-      report[:outgoing_messages_count],
       Reports::TimeFormatPresenter.new(report[:avg_first_response_time]).format,
       Reports::TimeFormatPresenter.new(report[:avg_resolution_time]).format,
       Reports::TimeFormatPresenter.new(report[:avg_reply_time]).format,
