@@ -253,6 +253,8 @@
     "MESSAGE_ERROR": "Unable to send this message, please try again later",
     "SENT_BY": "Lähettäjä:",
     "BOT": "Botti",
+    "NATIVE_APP": "Native app",
+    "NATIVE_APP_ADVISORY": "This message was sent from the native app. Reply from Chatwoot to maintain the message window.",
     "SEND_FAILED": "Viestiä ei voitu lähettää! Yritä uudelleen",
     "TRY_AGAIN": "retry",
     "ASSIGNMENT": {
