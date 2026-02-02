@@ -253,6 +253,8 @@
     "MESSAGE_ERROR": "לא ניתן לשלוח הודעה, אנא נסה שוב מאוחר יותר",
     "SENT_BY": "נשלח על ידי:",
     "BOT": "בוט",
+    "NATIVE_APP": "Native app",
+    "NATIVE_APP_ADVISORY": "This message was sent from the native app. Reply from Chatwoot to maintain the message window.",
     "SEND_FAILED": "לא ניתן לשלוח הודעה! נסה שוב",
     "TRY_AGAIN": "נסה שוב",
     "ASSIGNMENT": {
