@@ -150,7 +150,8 @@
       "ADD_PRIVATE_NOTE": "Aggiungi una Nota Privata",
       "CHANGE_PRIORITY": "Modifica Priorità",
       "ADD_SLA": "Aggiungi SLA",
-      "OPEN_CONVERSATION": "Riapri conversazione"
+      "OPEN_CONVERSATION": "Riapri conversazione",
+      "PENDING_CONVERSATION": "Mark conversation as pending"
     },
     "MESSAGE_TYPES": {
       "INCOMING": "Messaggio in Arrivo",
