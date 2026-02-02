@@ -29,8 +29,13 @@ export default {
       agentBots: 'agentBots/getBots',
       uiFlags: 'agentBots/getUIFlags',
     }),
+    currentInboxId() {
+      return this.inbox?.id || this.$route.params.inboxId;
+    },
     activeAgentBot() {
-      return this.$store.getters['agentBots/getActiveAgentBot'](this.inbox.id);
+      return this.$store.getters['agentBots/getActiveAgentBot'](
+        this.currentInboxId
+      );
     },
   },
   watch: {
@@ -39,11 +44,14 @@ export default {
     },
   },
   mounted() {
-    this.$store.dispatch('agentBots/get');
-    this.$store.dispatch('agentBots/fetchAgentBotInbox', this.inbox.id);
+    this.fetchBotData();
   },
 
   methods: {
+    fetchBotData() {
+      this.$store.dispatch('agentBots/get');
+      this.$store.dispatch('agentBots/fetchAgentBotInbox', this.currentInboxId);
+    },
     async updateActiveAgentBot() {
       try {
         await this.$store.dispatch('agentBots/setAgentBotInbox', {

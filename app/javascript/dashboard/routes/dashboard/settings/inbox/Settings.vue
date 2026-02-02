@@ -311,26 +311,61 @@ export default {
     },
   },
   watch: {
-    $route(to) {
+    $route(to, from) {
       if (to.name === 'settings_inbox_show') {
-        this.fetchInboxSettings();
+        const inboxChanged = to.params.inboxId !== from.params.inboxId;
+        if (inboxChanged) {
+          this.syncInboxData();
+          this.setTabFromRouteParam();
+        }
       }
     },
     inbox: {
-      handler() {
-        this.fetchHealthData();
+      handler(newInbox, oldInbox) {
+        if (newInbox?.id !== oldInbox?.id) {
+          this.syncInboxData();
+          this.fetchHealthData();
+          this.$nextTick(() => {
+            this.setTabFromRouteParam();
+          });
+        }
       },
-      immediate: false,
+      immediate: true,
     },
   },
   mounted() {
-    this.fetchInboxSettings();
-    this.fetchPortals();
-    this.fetchHealthData();
+    this.fetchSharedData();
   },
   methods: {
-    fetchPortals() {
+    fetchSharedData() {
+      this.$store.dispatch('agents/get');
+      this.$store.dispatch('teams/get');
+      this.$store.dispatch('labels/get');
       this.$store.dispatch('portals/index');
+    },
+    syncInboxData() {
+      if (!this.inbox || !this.inbox.id) return;
+
+      this.avatarUrl = this.inbox.avatar_url;
+      this.selectedInboxName = this.inbox.name;
+      this.webhookUrl = this.inbox.webhook_url;
+      this.greetingEnabled = this.inbox.greeting_enabled || false;
+      this.greetingMessage = this.inbox.greeting_message || '';
+      this.emailCollectEnabled = this.inbox.enable_email_collect;
+      this.senderNameType = this.inbox.sender_name_type;
+      this.businessName = this.inbox.business_name;
+      this.allowMessagesAfterResolved =
+        this.inbox.allow_messages_after_resolved;
+      this.continuityViaEmail = this.inbox.continuity_via_email;
+      this.channelWebsiteUrl = this.inbox.website_url;
+      this.channelWelcomeTitle = this.inbox.welcome_title;
+      this.channelWelcomeTagline = this.inbox.welcome_tagline || '';
+      this.selectedFeatureFlags = this.inbox.selected_feature_flags || [];
+      this.replyTime = this.inbox.reply_time;
+      this.locktoSingleConversation = this.inbox.lock_to_single_conversation;
+      this.selectedPortalSlug = this.inbox.help_center
+        ? this.inbox.help_center.slug
+        : '';
     },
     async fetchHealthData() {
       if (!this.inbox) return;
@@ -391,41 +426,12 @@ export default {
     },
     setTabFromRouteParam() {
       const { tab: tabParam } = this.$route.params;
-      if (!tabParam) return;
+      if (!tabParam) {
+        this.selectedTabIndex = 0;
+        return;
+      }
       const tabIndex = this.tabs.findIndex(tab => tab.key === tabParam);
-
       this.selectedTabIndex = tabIndex === -1 ? 0 : tabIndex;
-    },
-    fetchInboxSettings() {
-      this.selectedAgents = [];
-      this.$store.dispatch('agents/get');
-      this.$store.dispatch('teams/get');
-      this.$store.dispatch('labels/get');
-      this.$store.dispatch('inboxes/get').then(() => {
-        this.avatarUrl = this.inbox.avatar_url;
-        this.selectedInboxName = this.inbox.name;
-        this.webhookUrl = this.inbox.webhook_url;
-        this.greetingEnabled = this.inbox.greeting_enabled || false;
-        this.greetingMessage = this.inbox.greeting_message || '';
-        this.emailCollectEnabled = this.inbox.enable_email_collect;
-        this.senderNameType = this.inbox.sender_name_type;
-        this.businessName = this.inbox.business_name;
-        this.allowMessagesAfterResolved =
-          this.inbox.allow_messages_after_resolved;
-        this.continuityViaEmail = this.inbox.continuity_via_email;
-        this.channelWebsiteUrl = this.inbox.website_url;
-        this.channelWelcomeTitle = this.inbox.welcome_title;
-        this.channelWelcomeTagline = this.inbox.welcome_tagline || '';
-        this.selectedFeatureFlags = this.inbox.selected_feature_flags || [];
-        this.replyTime = this.inbox.reply_time;
-        this.locktoSingleConversation = this.inbox.lock_to_single_conversation;
-        this.selectedPortalSlug = this.inbox.help_center
-          ? this.inbox.help_center.slug
-          : '';
-
-        // Set initial tab after inbox data is loaded
-        this.setTabFromRouteParam();
-      });
     },
     async updateInbox() {
       try {
