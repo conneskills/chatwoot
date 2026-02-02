@@ -150,7 +150,8 @@
       "ADD_PRIVATE_NOTE": "Добавить личную заметку",
       "CHANGE_PRIORITY": "Изменить приоритет",
       "ADD_SLA": "Добавить SLA",
-      "OPEN_CONVERSATION": "Открыть беседу"
+      "OPEN_CONVERSATION": "Открыть беседу",
+      "PENDING_CONVERSATION": "Mark conversation as pending"
     },
     "MESSAGE_TYPES": {
       "INCOMING": "Входящее сообщение",
