@@ -253,6 +253,8 @@
     "MESSAGE_ERROR": "ارسال این پیام امکان پذیر نیست ، لطفاً بعداً دوباره امتحان کنید",
     "SENT_BY": "ارسال شده توسط:",
     "BOT": "ربات",
+    "NATIVE_APP": "Native app",
+    "NATIVE_APP_ADVISORY": "This message was sent from the native app. Reply from Chatwoot to maintain the message window.",
     "SEND_FAILED": "پیام ارسال نشد! دوباره امتحان کنید",
     "TRY_AGAIN": "دوباره امتحان کنید",
     "ASSIGNMENT": {
