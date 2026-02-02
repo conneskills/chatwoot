@@ -150,7 +150,8 @@
       "ADD_PRIVATE_NOTE": "Add a Private Note",
       "CHANGE_PRIORITY": "Ubah Prioritas",
       "ADD_SLA": "Add SLA",
-      "OPEN_CONVERSATION": "Buka percakapan"
+      "OPEN_CONVERSATION": "Buka percakapan",
+      "PENDING_CONVERSATION": "Mark conversation as pending"
     },
     "MESSAGE_TYPES": {
       "INCOMING": "Incoming Message",
