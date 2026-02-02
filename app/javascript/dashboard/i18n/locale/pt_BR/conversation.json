@@ -253,6 +253,8 @@
     "MESSAGE_ERROR": "Não foi possível enviar esta mensagem, por favor, tente novamente mais tarde",
     "SENT_BY": "Enviado por:",
     "BOT": "Robôs",
+    "NATIVE_APP": "Native app",
+    "NATIVE_APP_ADVISORY": "This message was sent from the native app. Reply from Chatwoot to maintain the message window.",
     "SEND_FAILED": "Não foi possível enviar a mensagem! Tente novamente",
     "TRY_AGAIN": "tentar novamente",
     "ASSIGNMENT": {
