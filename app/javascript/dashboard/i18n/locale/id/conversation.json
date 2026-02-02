@@ -253,6 +253,8 @@
     "MESSAGE_ERROR": "Tidak dapat mengirim pesan ini, mohon coba lagi nanti",
     "SENT_BY": "Dikirim oleh:",
     "BOT": "Bot",
+    "NATIVE_APP": "Native app",
+    "NATIVE_APP_ADVISORY": "This message was sent from the native app. Reply from Chatwoot to maintain the message window.",
     "SEND_FAILED": "Tidak dapat mengirim pesan! Coba lagi",
     "TRY_AGAIN": "coba lagi",
     "ASSIGNMENT": {
