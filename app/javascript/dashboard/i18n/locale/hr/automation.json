@@ -150,7 +150,8 @@
       "ADD_PRIVATE_NOTE": "Add a Private Note",
       "CHANGE_PRIORITY": "Promjena prioriteta",
       "ADD_SLA": "Add SLA",
-      "OPEN_CONVERSATION": "Otvori razgovor"
+      "OPEN_CONVERSATION": "Otvori razgovor",
+      "PENDING_CONVERSATION": "Mark conversation as pending"
     },
     "MESSAGE_TYPES": {
       "INCOMING": "Incoming Message",
