@@ -150,7 +150,8 @@
       "ADD_PRIVATE_NOTE": "პირადი ჩანაწერის დამატება",
       "CHANGE_PRIORITY": "პრიორიტეტის შეცვლა",
       "ADD_SLA": "SLA-ის დამატება",
-      "OPEN_CONVERSATION": "საუბრის გახსნა"
+      "OPEN_CONVERSATION": "საუბრის გახსნა",
+      "PENDING_CONVERSATION": "Mark conversation as pending"
     },
     "MESSAGE_TYPES": {
       "INCOMING": "შემომავალი შეტყობინება",
