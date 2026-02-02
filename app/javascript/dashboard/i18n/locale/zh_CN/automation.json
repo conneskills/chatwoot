@@ -150,7 +150,8 @@
       "ADD_PRIVATE_NOTE": "添加私密注释",
       "CHANGE_PRIORITY": "更改优先级",
       "ADD_SLA": "添加SLA",
-      "OPEN_CONVERSATION": "打开对话"
+      "OPEN_CONVERSATION": "打开对话",
+      "PENDING_CONVERSATION": "Mark conversation as pending"
     },
     "MESSAGE_TYPES": {
       "INCOMING": "Incoming Message",
