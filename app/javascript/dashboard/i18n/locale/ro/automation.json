@@ -150,7 +150,8 @@
       "ADD_PRIVATE_NOTE": "Add a Private Note",
       "CHANGE_PRIORITY": "Modificarea priorității",
       "ADD_SLA": "Add SLA",
-      "OPEN_CONVERSATION": "Deschiderea conversației"
+      "OPEN_CONVERSATION": "Deschiderea conversației",
+      "PENDING_CONVERSATION": "Mark conversation as pending"
     },
     "MESSAGE_TYPES": {
       "INCOMING": "Incoming Message",
