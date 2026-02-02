@@ -150,7 +150,8 @@
       "ADD_PRIVATE_NOTE": "Pievienot Privātu Piezīmi",
       "CHANGE_PRIORITY": "Mainīt prioritāti",
       "ADD_SLA": "Pievienot SLA",
-      "OPEN_CONVERSATION": "Atvērt sarunu"
+      "OPEN_CONVERSATION": "Atvērt sarunu",
+      "PENDING_CONVERSATION": "Mark conversation as pending"
     },
     "MESSAGE_TYPES": {
       "INCOMING": "Incoming Message",
