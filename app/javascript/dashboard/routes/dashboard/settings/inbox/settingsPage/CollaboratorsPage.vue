@@ -4,12 +4,12 @@ import { useVuelidate } from '@vuelidate/core';
 import { minValue } from '@vuelidate/validators';
 import { useAlert } from 'dashboard/composables';
 import { useConfig } from 'dashboard/composables/useConfig';
-import SettingsSection from '../../../../../components/SettingsSection.vue';
+import SettingsFieldSection from 'dashboard/components-next/Settings/SettingsFieldSection.vue';
 import NextButton from 'dashboard/components-next/button/Button.vue';
 
 export default {
   components: {
-    SettingsSection,
+    SettingsFieldSection,
     NextButton,
   },
   props: {
@@ -45,13 +45,14 @@ export default {
     },
   },
   watch: {
-    inbox() {
-      this.setDefaults();
+    inbox: {
+      handler() {
+        this.setDefaults();
+      },
+      immediate: true,
     },
   },
-  mounted() {
-    this.setDefaults();
-  },
+
   methods: {
     setDefaults() {
       this.enableAutoAssignment = this.inbox.enable_auto_assignment;
@@ -120,76 +121,88 @@ export default {
 </script>
 
 <template>
-  <div>
-    <SettingsSection
-      :title="$t('INBOX_MGMT.SETTINGS_POPUP.INBOX_AGENTS')"
-      :sub-title="$t('INBOX_MGMT.SETTINGS_POPUP.INBOX_AGENTS_SUB_TEXT')"
-    >
-      <multiselect
-        v-model="selectedAgents"
-        :options="agentList"
-        track-by="id"
-        label="name"
-        multiple
-        :close-on-select="false"
-        :clear-on-select="false"
-        hide-selected
-        placeholder="Pick some"
-        selected-label
-        :select-label="$t('FORMS.MULTISELECT.ENTER_TO_SELECT')"
-        :deselect-label="$t('FORMS.MULTISELECT.ENTER_TO_REMOVE')"
-        @select="v$.selectedAgents.$touch"
-      />
+  <SettingsFieldSection
+    :label="$t('INBOX_MGMT.SETTINGS_POPUP.INBOX_AGENTS')"
+    :help-text="$t('INBOX_MGMT.SETTINGS_POPUP.INBOX_AGENTS_SUB_TEXT')"
+    class="[&>div]:!items-start"
+  >
+    <multiselect
+      v-model="selectedAgents"
+      :options="agentList"
+      track-by="id"
+      label="name"
+      multiple
+      :close-on-select="false"
+      :clear-on-select="false"
+      hide-selected
+      placeholder="Pick some"
+      selected-label
+      :select-label="$t('FORMS.MULTISELECT.ENTER_TO_SELECT')"
+      :deselect-label="$t('FORMS.MULTISELECT.ENTER_TO_REMOVE')"
+      class="!mb-0"
+      @select="v$.selectedAgents.$touch"
+    />
 
-      <NextButton
-        :label="$t('INBOX_MGMT.SETTINGS_POPUP.UPDATE')"
-        :is-loading="isAgentListUpdating"
-        @click="updateAgents"
-      />
-    </SettingsSection>
-
-    <SettingsSection
-      :title="$t('INBOX_MGMT.SETTINGS_POPUP.AGENT_ASSIGNMENT')"
-      :sub-title="$t('INBOX_MGMT.SETTINGS_POPUP.AGENT_ASSIGNMENT_SUB_TEXT')"
-    >
-      <label class="w-3/4 settings-item">
-        <div class="flex items-center gap-2">
-          <input
-            id="enableAutoAssignment"
-            v-model="enableAutoAssignment"
-            type="checkbox"
-            @change="handleEnableAutoAssignment"
+    <template #extra>
+      <div class="grid grid-cols-1 lg:grid-cols-8">
+        <div class="col-span-1 lg:col-span-2" />
+        <div class="col-span-1 lg:col-span-6 mt-4 justify-self-end">
+          <NextButton
+            :label="$t('INBOX_MGMT.SETTINGS_POPUP.UPDATE')"
+            :is-loading="isAgentListUpdating"
+            @click="updateAgents"
           />
-          <label for="enableAutoAssignment">
-            {{ $t('INBOX_MGMT.SETTINGS_POPUP.AUTO_ASSIGNMENT') }}
-          </label>
         </div>
-
-        <p class="pb-1 text-sm not-italic text-n-slate-11">
-          {{ $t('INBOX_MGMT.SETTINGS_POPUP.AUTO_ASSIGNMENT_SUB_TEXT') }}
-        </p>
-      </label>
-
-      <div v-if="enableAutoAssignment && isEnterprise" class="py-3">
-        <woot-input
-          v-model="maxAssignmentLimit"
-          type="number"
-          :class="{ error: v$.maxAssignmentLimit.$error }"
-          :error="maxAssignmentLimitErrors"
-          :label="$t('INBOX_MGMT.AUTO_ASSIGNMENT.MAX_ASSIGNMENT_LIMIT')"
-          @blur="v$.maxAssignmentLimit.$touch"
-        />
-
-        <p class="pb-1 text-sm not-italic text-n-slate-11">
-          {{ $t('INBOX_MGMT.AUTO_ASSIGNMENT.MAX_ASSIGNMENT_LIMIT_SUB_TEXT') }}
-        </p>
-
-        <NextButton
-          :label="$t('INBOX_MGMT.SETTINGS_POPUP.UPDATE')"
-          :disabled="v$.maxAssignmentLimit.$invalid"
-          @click="updateInbox"
-        />
       </div>
-    </SettingsSection>
-  </div>
+    </template>
+  </SettingsFieldSection>
+
+  <SettingsFieldSection
+    :label="$t('INBOX_MGMT.SETTINGS_POPUP.AGENT_ASSIGNMENT')"
+    class="[&>div]:!items-baseline"
+  >
+    <div class="flex items-center gap-2 mt-1 lg:mt-0">
+      <input
+        id="enableAutoAssignment"
+        v-model="enableAutoAssignment"
+        type="checkbox"
+        @change="handleEnableAutoAssignment"
+      />
+      <label for="enableAutoAssignment" class="text-heading-3 text-n-slate-12">
+        {{ $t('INBOX_MGMT.SETTINGS_POPUP.AUTO_ASSIGNMENT') }}
+      </label>
+    </div>
+
+    <p class="text-body-main text-n-slate-11 mt-1">
+      {{ $t('INBOX_MGMT.SETTINGS_POPUP.AUTO_ASSIGNMENT_SUB_TEXT') }}
+    </p>
+
+    <div v-if="enableAutoAssignment && isEnterprise" class="py-3">
+      <woot-input
+        v-model="maxAssignmentLimit"
+        type="number"
+        :class="{ error: v$.maxAssignmentLimit.$error }"
+        :error="maxAssignmentLimitErrors"
+        :label="$t('INBOX_MGMT.AUTO_ASSIGNMENT.MAX_ASSIGNMENT_LIMIT')"
+        class="[&>input]:!mb-0"
+        @blur="v$.maxAssignmentLimit.$touch"
+      />
+
+      <p class="mt-1.5 text-label-small text-n-slate-11">
+        {{ $t('INBOX_MGMT.AUTO_ASSIGNMENT.MAX_ASSIGNMENT_LIMIT_SUB_TEXT') }}
+      </p>
+    </div>
+    <template v-if="enableAutoAssignment && isEnterprise" #extra>
+      <div class="grid grid-cols-1 lg:grid-cols-8">
+        <div class="col-span-1 lg:col-span-2" />
+        <div class="col-span-1 lg:col-span-6 mt-4 justify-self-end">
+          <NextButton
+            :label="$t('INBOX_MGMT.SETTINGS_POPUP.UPDATE')"
+            :disabled="v$.maxAssignmentLimit.$invalid"
+            @click="updateInbox"
+          />
+        </div>
+      </div>
+    </template>
+  </SettingsFieldSection>
 </template>

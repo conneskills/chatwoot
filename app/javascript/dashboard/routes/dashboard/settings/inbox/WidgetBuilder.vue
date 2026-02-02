@@ -272,9 +272,9 @@ export default {
 
 <template>
   <div class="mx-6">
-    <div class="flex py-6">
+    <div class="flex">
       <div class="w-100 lg:w-[40%]">
-        <div class="min-h-full py-4 overflow-y-scroll px-px">
+        <div class="min-h-full pb-4 overflow-y-scroll px-px">
           <form @submit.prevent="updateWidget">
             <div class="flex flex-col mb-4 items-start gap-1 w-full">
               <label class="mb-0.5 text-sm font-medium text-n-slate-12">

@@ -577,7 +577,7 @@
           "SUBTITLE": "Use only the configured business name as the sender name in the email header."
         },
         "BUSINESS_NAME": {
-          "BUTTON_TEXT": "+ Configure your business name",
+          "BUTTON_TEXT": "Configure your business name",
           "PLACEHOLDER": "Enter your business name",
           "SAVE_BUTTON_TEXT": "Save"
         }
@@ -866,9 +866,11 @@
       "UNAVAILABLE_MESSAGE_LABEL": "Unavailable message for visitors",
       "TOGGLE_HELP": "Enabling business availability will show the available hours on live chat widget even if all the agents are offline. Outside available hours visitors can be warned with a message and a pre-chat form.",
       "DAY": {
+        "DAY": "Day",
+        "AVAILABILITY": "Availability",
+        "HOURS": "Hours",
         "ENABLE": "Enable availability for this day",
         "UNAVAILABLE": "Unavailable",
-        "HOURS": "hours",
         "VALIDATION_ERROR": "Starting time should be before closing time.",
         "CHOOSE": "Choose"
       },
