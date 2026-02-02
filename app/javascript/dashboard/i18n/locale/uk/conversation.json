@@ -253,6 +253,8 @@
     "MESSAGE_ERROR": "Не вдалося надіслати повідомлення, будь ласка, повторіть спробу пізніше",
     "SENT_BY": "Надіслав:",
     "BOT": "Бот",
+    "NATIVE_APP": "Native app",
+    "NATIVE_APP_ADVISORY": "This message was sent from the native app. Reply from Chatwoot to maintain the message window.",
     "SEND_FAILED": "Не вдалося надіслати повідомлення! Повторіть спробу",
     "TRY_AGAIN": "повторити",
     "ASSIGNMENT": {
