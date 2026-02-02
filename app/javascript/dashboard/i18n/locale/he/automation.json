@@ -150,7 +150,8 @@
       "ADD_PRIVATE_NOTE": "הוסף הערה פרטית",
       "CHANGE_PRIORITY": "שנה עדיפות",
       "ADD_SLA": "הוסף SLA",
-      "OPEN_CONVERSATION": "פתח שיחה"
+      "OPEN_CONVERSATION": "פתח שיחה",
+      "PENDING_CONVERSATION": "Mark conversation as pending"
     },
     "MESSAGE_TYPES": {
       "INCOMING": "הודעה נכנסת",
