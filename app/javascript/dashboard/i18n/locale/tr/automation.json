@@ -150,7 +150,8 @@
       "ADD_PRIVATE_NOTE": "Özel Not Ekle",
       "CHANGE_PRIORITY": "Önceliği Değiştir",
       "ADD_SLA": "Add SLA",
-      "OPEN_CONVERSATION": "Görüşmeyi aç"
+      "OPEN_CONVERSATION": "Görüşmeyi aç",
+      "PENDING_CONVERSATION": "Mark conversation as pending"
     },
     "MESSAGE_TYPES": {
       "INCOMING": "Gelen Mesaj",
