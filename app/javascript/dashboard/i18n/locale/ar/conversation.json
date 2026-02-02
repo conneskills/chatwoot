@@ -253,6 +253,8 @@
     "MESSAGE_ERROR": "غير قادر على إرسال هذه الرسالة، الرجاء المحاولة مرة أخرى لاحقاً",
     "SENT_BY": "أرسلت بواسطة:",
     "BOT": "رد آلي",
+    "NATIVE_APP": "Native app",
+    "NATIVE_APP_ADVISORY": "This message was sent from the native app. Reply from Chatwoot to maintain the message window.",
     "SEND_FAILED": "تعذر إرسال الرسالة! حاول مرة أخرى",
     "TRY_AGAIN": "إعادة المحاولة",
     "ASSIGNMENT": {
