@@ -71,12 +71,12 @@ export default {
     ...mapGetters({ uiFlags: 'inboxes/getUIFlags' }),
   },
   watch: {
-    inbox: {
-      handler() {
-        this.setDefaults();
-      },
-      immediate: true,
+    inbox() {
+      this.setDefaults();
     },
+  },
+  mounted() {
+    this.setDefaults();
   },
   methods: {
     setDefaults() {

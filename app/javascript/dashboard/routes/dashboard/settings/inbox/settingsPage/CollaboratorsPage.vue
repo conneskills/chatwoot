@@ -45,14 +45,13 @@ export default {
     },
   },
   watch: {
-    inbox: {
-      handler() {
-        this.setDefaults();
-      },
-      immediate: true,
+    inbox() {
+      this.setDefaults();
     },
   },
-
+  mounted() {
+    this.setDefaults();
+  },
   methods: {
     setDefaults() {
       this.enableAutoAssignment = this.inbox.enable_auto_assignment;

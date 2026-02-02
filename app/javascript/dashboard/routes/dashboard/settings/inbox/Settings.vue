@@ -439,7 +439,7 @@ export default {
           portal_id: this.selectedPortalSlug
             ? this.portals.find(
                 portal => portal.slug === this.selectedPortalSlug
-              ).id
+              )?.id || null
             : null,
           lock_to_single_conversation: this.locktoSingleConversation,
           sender_name_type: this.senderNameType,
@@ -701,7 +701,10 @@ export default {
           <SelectInput
             v-model="selectedPortalSlug"
             :placeholder="$t('INBOX_MGMT.HELP_CENTER.PLACEHOLDER')"
-            :options="portals.map(p => ({ value: p.slug, label: p.name }))"
+            :options="[
+              { value: '', label: $t('INBOX_MGMT.HELP_CENTER.NONE') },
+              ...portals.map(p => ({ value: p.slug, label: p.name })),
+            ]"
           />
         </SettingsFieldSection>
 

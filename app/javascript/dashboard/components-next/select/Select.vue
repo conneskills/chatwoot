@@ -43,7 +43,9 @@ const modelValue = defineModel({
         'outline-n-weak bg-n-slate-2 cursor-not-allowed opacity-60': disabled,
       }"
     >
-      <option v-if="placeholder" value="" disabled>{{ placeholder }}</option>
+      <option v-if="placeholder" :value="null" disabled>
+        {{ placeholder }}
+      </option>
       <option
         v-for="option in options"
         :key="option.value"
