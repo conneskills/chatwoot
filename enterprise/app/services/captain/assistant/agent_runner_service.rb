@@ -1,6 +1,9 @@
 require 'agents'
+require 'agents/instrumentation'
 
 class Captain::Assistant::AgentRunnerService
+  include Integrations::LlmInstrumentationConstants
+
   CONVERSATION_STATE_ATTRIBUTES = %i[
     id display_id inbox_id contact_id status priority
     label_list custom_attributes additional_attributes
@@ -23,6 +26,7 @@ class Captain::Assistant::AgentRunnerService
     message_to_process = extract_last_user_message(message_history)
     runner = Agents::Runner.with_agents(*agents)
     runner = add_callbacks_to_runner(runner) if @callbacks.any?
+    install_instrumentation(runner)
     result = runner.run(message_to_process, context: context, max_turns: 100)
 
     process_agent_result(result)
@@ -122,6 +126,28 @@ class Captain::Assistant::AgentRunnerService
     scenario_agents.each { |scenario_agent| scenario_agent.register_handoffs(assistant_agent) }
 
     [assistant_agent] + scenario_agents
+  end
+
+  def install_instrumentation(runner)
+    return unless ChatwootApp.otel_enabled?
+
+    Agents::Instrumentation.install(
+      runner,
+      tracer: OpentelemetryConfig.tracer,
+      trace_name: 'llm.captain_v2',
+      span_attributes: span_attributes
+    )
+  end
+
+  def span_attributes
+    {
+      ATTR_LANGFUSE_SESSION_ID => "#{@assistant.account_id}_#{@conversation&.display_id}",
+      ATTR_LANGFUSE_USER_ID => @assistant.account_id.to_s,
+      ATTR_LANGFUSE_TAGS => ['captain_v2'].to_json,
+      format(ATTR_LANGFUSE_METADATA, 'assistant_id') => @assistant.id.to_s,
+      format(ATTR_LANGFUSE_METADATA, 'conversation_id') => @conversation&.id.to_s,
+      format(ATTR_LANGFUSE_METADATA, 'conversation_display_id') => @conversation&.display_id.to_s
+    }
   end
 
   def add_callbacks_to_runner(runner)
