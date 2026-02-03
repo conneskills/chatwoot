@@ -173,8 +173,9 @@ class ConversationFinder
     # Check if filtering by status only (no other filters applied)
     filtering_by_status_only = FILTER_PARAMS.none? { |key| params[key].present? }
 
-    # Use cache if feature is enabled, filtering by status only, and status is not 'all'
+    # Use cache only for admins (non-admins have inbox permission filters applied)
     use_cache = current_account.feature_enabled?(:counter_cache_optimization) &&
+                @is_admin &&
                 filtering_by_status_only &&
                 params[:status] != 'all'
 
