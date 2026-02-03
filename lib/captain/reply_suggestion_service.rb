@@ -22,7 +22,8 @@ class Captain::ReplySuggestionService < Captain::BaseTaskService
     {
       'channel_type' => conversation.inbox.channel_type,
       'agent_name' => user.name,
-      'agent_signature' => user.message_signature.presence
+      'agent_signature' => user.message_signature.presence,
+      'account_language' => account.locale_english_name
     }
   end
 
