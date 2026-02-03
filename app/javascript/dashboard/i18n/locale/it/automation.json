@@ -151,7 +151,7 @@
       "CHANGE_PRIORITY": "Modifica Priorità",
       "ADD_SLA": "Aggiungi SLA",
       "OPEN_CONVERSATION": "Riapri conversazione",
-      "PENDING_CONVERSATION": "Mark conversation as pending"
+      "PENDING_CONVERSATION": "Segna conversazione come in sospeso"
     },
     "MESSAGE_TYPES": {
       "INCOMING": "Messaggio in Arrivo",
