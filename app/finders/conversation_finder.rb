@@ -2,6 +2,9 @@ class ConversationFinder
   attr_reader :current_user, :current_account, :params
 
   DEFAULT_STATUS = 'open'.freeze
+  # Filter params that affect conversation count
+  # NOTE: When adding a new filter, add it here to prevent incorrect cache usage
+  FILTER_PARAMS = %i[inbox_id team_id labels q source_id conversation_type].freeze
   SORT_OPTIONS = {
     'last_activity_at_asc' => %w[sort_on_last_activity_at asc],
     'last_activity_at_desc' => %w[sort_on_last_activity_at desc],
@@ -167,10 +170,25 @@ class ConversationFinder
   end
 
   def set_count_for_all_conversations
+    # Check if filtering by status only (no other filters applied)
+    filtering_by_status_only = FILTER_PARAMS.none? { |key| params[key].present? }
+
+    # Use cache if feature is enabled, filtering by status only, and status is not 'all'
+    use_cache = current_account.feature_enabled?(:counter_cache_optimization) &&
+                filtering_by_status_only &&
+                params[:status] != 'all'
+
+    all_count = if use_cache
+                  status = params[:status] || DEFAULT_STATUS
+                  current_account.public_send("#{status}_conversations_count")
+                else
+                  @conversations.count
+                end
+
     [
       @conversations.assigned_to(current_user).count,
       @conversations.unassigned.count,
-      current_account.conversations_count
+      all_count
     ]
   end
 

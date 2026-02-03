@@ -241,3 +241,7 @@
   display_name: Required Conversation Attributes
   enabled: false
   premium: true
+- name: counter_cache_optimization
+  display_name: Counter Cache Optimization
+  enabled: false
+  chatwoot_internal: true
