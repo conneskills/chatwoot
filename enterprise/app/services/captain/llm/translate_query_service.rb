@@ -4,6 +4,8 @@ class Captain::Llm::TranslateQueryService < Captain::BaseTaskService
   pattr_initialize [:account!]
 
   def translate(query, target_language:)
+    return query if query_in_target_language?(query)
+
     messages = [
       { role: 'system', content: system_prompt(target_language) },
       { role: 'user', content: query }
@@ -22,6 +24,19 @@ class Captain::Llm::TranslateQueryService < Captain::BaseTaskService
 
   def event_name
     'translate_query'
+  end
+
+  def query_in_target_language?(query)
+    detector = CLD3::NNetLanguageIdentifier.new(0, 1000)
+    result = detector.find_language(query)
+
+    result.reliable? && result.language == account_language_code
+  rescue StandardError
+    false
+  end
+
+  def account_language_code
+    account.locale&.split('_')&.first
   end
 
   def system_prompt(target_language)
