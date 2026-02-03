@@ -198,18 +198,6 @@ export default {
   <div v-else-if="isAWebWidgetInbox">
     <div class="mx-6">
       <SettingsFieldSection
-        :label="$t('INBOX_MGMT.SETTINGS_POPUP.MESSENGER_HEADING')"
-        class="[&>div]:!items-start"
-      >
-        <woot-code
-          :script="inbox.web_widget_script"
-          lang="html"
-          :codepen-title="`${inbox.name} - Chatwoot Widget Test`"
-          enable-code-pen
-        />
-      </SettingsFieldSection>
-
-      <SettingsFieldSection
         :label="$t('INBOX_MGMT.SETTINGS_POPUP.ALLOWED_DOMAINS.TITLE')"
         :help-text="$t('INBOX_MGMT.SETTINGS_POPUP.ALLOWED_DOMAINS.SUBTITLE')"
         class="[&>div]:!items-start"

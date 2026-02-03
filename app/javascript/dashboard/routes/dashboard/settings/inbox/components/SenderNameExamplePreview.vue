@@ -55,7 +55,9 @@ const toggleSenderNameType = key => {
 </script>
 
 <template>
-  <div class="flex flex-col lg:flex-row items-start gap-4 mt-3">
+  <div
+    class="flex flex-col sm:flex-row md:flex-col xl:flex-row items-start gap-4 mt-3 min-w-0"
+  >
     <RadioCard
       v-for="keyOption in senderNameKeyOptions"
       :id="keyOption.key"
