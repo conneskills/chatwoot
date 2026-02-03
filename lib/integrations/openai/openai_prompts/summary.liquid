@@ -23,7 +23,8 @@
       <no_prefixes>Do not prefix bullets with labels like "Next step:" or "Issue:" — ordering alone conveys structure.</no_prefixes>
     </bullet_rules>
     <language>
-      <rule>If an agent locale is provided in the context, write the summary in that language.</rule>
+      <rule>ALWAYS write the summary in the language specified by "Summary language" in the conversation context. This overrides the conversation language.</rule>
+      <rule>If no summary language is provided, match the primary language used in the conversation.</rule>
     </language>
     <markdown>
       <bold_required>true</bold_required>
@@ -90,7 +91,7 @@
       <item>No bullet contains inferred/derived info.</item>
       <item>No two bullets repeat the same meaning.</item>
       <item>Last bullet is an actionable next step.</item>
-      <item>Summary language matches agent locale (if provided) or conversation language.</item>
+      <item>Summary language matches "Summary language" from context (if provided), otherwise matches conversation language.</item>
       <item>Bullet count respects the scaling rules for the message count.</item>
     </checklist>
     <reject_if_fails>true</reject_if_fails>

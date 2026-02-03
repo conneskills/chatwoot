@@ -71,7 +71,7 @@ class Captain::SummaryService < Captain::BaseTaskService
   def account_context_fields
     [
       ("Account industry: #{account.custom_attributes['industry']}" if account.custom_attributes&.dig('industry').present?),
-      ("Account language: #{account.locale}" if account.locale.present?)
+      ("Summary language: #{account.locale}" if account.locale.present?)
     ]
   end
 
