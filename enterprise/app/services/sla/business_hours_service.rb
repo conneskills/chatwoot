@@ -34,7 +34,9 @@ class Sla::BusinessHoursService
       return
     end
 
-    adjust_current_time_to_business_hours(working_hour)
+    # If adjust moved to next day, return early to re-fetch correct working hours
+    return unless adjust_current_time_to_business_hours(working_hour)
+
     consume_available_seconds(working_hour)
   end
 
@@ -42,14 +44,19 @@ class Sla::BusinessHoursService
     working_hour.nil? || working_hour.closed_all_day?
   end
 
+  # Returns true if current_time was adjusted within the same day, false if moved to next day
   def adjust_current_time_to_business_hours(working_hour)
     day_open_time = time_on_date(@current_time, working_hour.open_hour, working_hour.open_minutes)
     day_close_time = time_on_date(@current_time, working_hour.close_hour, working_hour.close_minutes)
 
     if @current_time < day_open_time
       @current_time = day_open_time
+      true
     elsif @current_time >= day_close_time
       @current_time = next_business_day_start(@current_time)
+      false
+    else
+      true
     end
   end
 

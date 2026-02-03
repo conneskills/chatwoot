@@ -124,5 +124,38 @@ RSpec.describe Sla::BusinessHoursService do
         expect(service.deadline.to_i).to eq(saturday_12pm.to_i)
       end
     end
+
+    context 'when days have different business hours' do
+      it 'uses the correct close time after advancing to next day' do
+        # Monday (day 1) closes at 17:00, Tuesday (day 2) closes at 20:00
+        inbox.working_hours.find_by(day_of_week: 1).update!(open_hour: 9, close_hour: 17)
+        inbox.working_hours.find_by(day_of_week: 2).update!(open_hour: 9, close_hour: 20)
+
+        # Start at Monday 18:00 (after close) + 10 hours
+        # Should start counting from Tuesday 9:00 AM
+        # Tuesday has 11 hours available (9:00-20:00), so 10 hours = Tuesday 19:00
+        monday_6pm = Time.zone.parse('2024-01-15 18:00:00') # Monday
+        tuesday_7pm = Time.zone.parse('2024-01-16 19:00:00') # Tuesday
+
+        service = described_class.new(inbox: inbox, start_time: monday_6pm, threshold_seconds: 10.hours)
+
+        expect(service.deadline.to_i).to eq(tuesday_7pm.to_i)
+      end
+
+      it 'spans correctly across days with varying hours' do
+        # Monday (day 1): 9:00-17:00 (8h), Tuesday (day 2): 9:00-20:00 (11h)
+        inbox.working_hours.find_by(day_of_week: 1).update!(open_hour: 9, close_hour: 17)
+        inbox.working_hours.find_by(day_of_week: 2).update!(open_hour: 9, close_hour: 20)
+
+        # Start at Monday 16:00 + 12 hours
+        # Monday: 1h (16:00-17:00), Tuesday: 11h remaining (9:00-20:00)
+        monday_4pm = Time.zone.parse('2024-01-15 16:00:00')
+        tuesday_8pm = Time.zone.parse('2024-01-16 20:00:00')
+
+        service = described_class.new(inbox: inbox, start_time: monday_4pm, threshold_seconds: 12.hours)
+
+        expect(service.deadline.to_i).to eq(tuesday_8pm.to_i)
+      end
+    end
   end
 end
