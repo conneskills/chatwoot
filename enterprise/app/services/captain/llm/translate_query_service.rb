@@ -5,8 +5,8 @@ class Captain::Llm::TranslateQueryService < Captain::BaseTaskService
 
   def translate(query, target_language:)
     messages = [
-      { role: :system, content: system_prompt(target_language) },
-      { role: :user, content: query }
+      { role: 'system', content: system_prompt(target_language) },
+      { role: 'user', content: query }
     ]
 
     response = make_api_call(model: MODEL, messages: messages)
