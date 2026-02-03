@@ -97,7 +97,7 @@ class Conversation < ApplicationRecord
     ).sort_on_last_user_message_at
   }
 
-  belongs_to :account
+  belongs_to :account, counter_cache: true
   belongs_to :inbox
   belongs_to :assignee, class_name: 'User', optional: true, inverse_of: :assigned_conversations
   belongs_to :assignee_agent_bot, class_name: 'AgentBot', optional: true

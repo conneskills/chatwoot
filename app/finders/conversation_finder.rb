@@ -170,7 +170,7 @@ class ConversationFinder
     [
       @conversations.assigned_to(current_user).count,
       @conversations.unassigned.count,
-      @conversations.count
+      current_account.conversations_count
     ]
   end
 
