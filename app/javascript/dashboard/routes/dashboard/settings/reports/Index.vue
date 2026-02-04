@@ -1,6 +1,7 @@
 <script>
 import V4Button from 'dashboard/components-next/button/Button.vue';
 import { useAlert, useTrack } from 'dashboard/composables';
+import { useHiddenMetrics } from 'dashboard/composables/useHiddenMetrics';
 import ReportFilterSelector from './components/FilterSelector.vue';
 import { GROUP_BY_FILTER } from './constants';
 import { REPORTS_EVENTS } from '../../../../helper/AnalyticsHelper/events';
@@ -8,7 +9,7 @@ import { generateFileName } from 'dashboard/helper/downloadHelper';
 import ReportContainer from './ReportContainer.vue';
 import ReportHeader from './components/ReportHeader.vue';
 
-const REPORTS_KEYS = {
+const ALL_REPORTS_KEYS = {
   CONVERSATIONS: 'conversations_count',
   INCOMING_MESSAGES: 'incoming_messages_count',
   OUTGOING_MESSAGES: 'outgoing_messages_count',
@@ -26,6 +27,10 @@ export default {
     ReportContainer,
     V4Button,
   },
+  setup() {
+    const { filterVisibleReportKeys } = useHiddenMetrics();
+    return { filterVisibleReportKeys };
+  },
   data() {
     return {
       from: 0,
@@ -33,6 +38,11 @@ export default {
       groupBy: GROUP_BY_FILTER[1],
       businessHours: false,
     };
+  },
+  computed: {
+    reportKeys() {
+      return this.filterVisibleReportKeys(ALL_REPORTS_KEYS);
+    },
   },
   methods: {
     fetchAllData() {
@@ -47,18 +57,10 @@ export default {
       }
     },
     fetchChartData() {
-      [
-        'CONVERSATIONS',
-        'INCOMING_MESSAGES',
-        'OUTGOING_MESSAGES',
-        'FIRST_RESPONSE_TIME',
-        'RESOLUTION_TIME',
-        'RESOLUTION_COUNT',
-        'REPLY_TIME',
-      ].forEach(async key => {
+      Object.keys(this.reportKeys).forEach(async key => {
         try {
           await this.$store.dispatch('fetchAccountReport', {
-            metric: REPORTS_KEYS[key],
+            metric: this.reportKeys[key],
             ...this.getRequestPayload(),
           });
         } catch {
@@ -121,6 +123,6 @@ export default {
       show-group-by-filter
       @filter-change="onFilterChange"
     />
-    <ReportContainer :group-by="groupBy" />
+    <ReportContainer :group-by="groupBy" :report-keys="reportKeys" />
   </div>
 </template>

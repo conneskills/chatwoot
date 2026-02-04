@@ -2,6 +2,7 @@
 import ReportFilterSelector from './FilterSelector.vue';
 import { formatTime } from '@chatwoot/utils';
 import { useStore, useMapGetter } from 'dashboard/composables/store';
+import { useHiddenMetrics } from 'dashboard/composables/useHiddenMetrics';
 import Table from 'dashboard/components/table/Table.vue';
 import { generateFileName } from 'dashboard/helper/downloadHelper';
 import {
@@ -44,6 +45,7 @@ import SummaryReportLink from './SummaryReportLink.vue';
 
 const rowItems = useMapGetter([props.getterKey]) || [];
 const reportMetrics = useMapGetter([props.summaryKey]) || [];
+const { isMetricHidden } = useHiddenMetrics();
 
 const getMetrics = id =>
   reportMetrics.value.find(metrics => metrics.id === Number(id)) || {};
@@ -59,38 +61,42 @@ const defaulSpanRender = cellProps =>
     cellProps.getValue()
   );
 
-const columns = computed(() => [
-  columnHelper.accessor('name', {
-    header: t(`SUMMARY_REPORTS.${props.type.toUpperCase()}`),
-    width: 300,
-    cell: cellProps => h(SummaryReportLink, cellProps),
-  }),
-  columnHelper.accessor('conversationsCount', {
-    header: t('SUMMARY_REPORTS.CONVERSATIONS'),
-    width: 200,
-    cell: defaulSpanRender,
-  }),
-  columnHelper.accessor('avgFirstResponseTime', {
-    header: t('SUMMARY_REPORTS.AVG_FIRST_RESPONSE_TIME'),
-    width: 200,
-    cell: defaulSpanRender,
-  }),
-  columnHelper.accessor('avgResolutionTime', {
-    header: t('SUMMARY_REPORTS.AVG_RESOLUTION_TIME'),
-    width: 200,
-    cell: defaulSpanRender,
-  }),
-  columnHelper.accessor('avgReplyTime', {
-    header: t('SUMMARY_REPORTS.AVG_REPLY_TIME'),
-    width: 200,
-    cell: defaulSpanRender,
-  }),
-  columnHelper.accessor('resolutionsCount', {
-    header: t('SUMMARY_REPORTS.RESOLUTION_COUNT'),
-    width: 200,
-    cell: defaulSpanRender,
-  }),
-]);
+const columns = computed(() => {
+  const allColumns = [
+    columnHelper.accessor('name', {
+      header: t(`SUMMARY_REPORTS.${props.type.toUpperCase()}`),
+      width: 300,
+      cell: cellProps => h(SummaryReportLink, cellProps),
+    }),
+    columnHelper.accessor('conversationsCount', {
+      header: t('SUMMARY_REPORTS.CONVERSATIONS'),
+      width: 200,
+      cell: defaulSpanRender,
+    }),
+    columnHelper.accessor('avgFirstResponseTime', {
+      header: t('SUMMARY_REPORTS.AVG_FIRST_RESPONSE_TIME'),
+      width: 200,
+      cell: defaulSpanRender,
+    }),
+    columnHelper.accessor('avgResolutionTime', {
+      header: t('SUMMARY_REPORTS.AVG_RESOLUTION_TIME'),
+      width: 200,
+      cell: defaulSpanRender,
+    }),
+    !isMetricHidden('reply_time') &&
+      columnHelper.accessor('avgReplyTime', {
+        header: t('SUMMARY_REPORTS.AVG_REPLY_TIME'),
+        width: 200,
+        cell: defaulSpanRender,
+      }),
+    columnHelper.accessor('resolutionsCount', {
+      header: t('SUMMARY_REPORTS.RESOLUTION_COUNT'),
+      width: 200,
+      cell: defaulSpanRender,
+    }),
+  ];
+  return allColumns.filter(Boolean);
+});
 
 const renderAvgTime = value => (value ? formatTime(value) : '--');
 
