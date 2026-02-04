@@ -171,7 +171,7 @@ class ConversationFinder
 
   def set_count_for_all_conversations
     # Check if filtering by status only (no other filters applied)
-    filtering_by_status_only = FILTER_PARAMS.none? { |key| params[key].present? }
+    filtering_by_status_only = FILTER_PARAMS.none? { |key| params[key] }
 
     # Use cache only for admins (non-admins have inbox permission filters applied)
     use_cache = current_account.feature_enabled?(:counter_cache_optimization) &&
