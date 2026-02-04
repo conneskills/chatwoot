@@ -2,6 +2,7 @@
 import { computed } from 'vue';
 import { dateRanges } from '../helpers/DatePickerHelper';
 import { format, isSameYear, isValid } from 'date-fns';
+import Icon from 'dashboard/components-next/icon/Icon.vue';
 
 const props = defineProps({
   selectedStartDate: Date,
@@ -48,16 +49,22 @@ const openDatePicker = () => {
 
 <template>
   <button
-    class="inline-flex relative items-center rounded-lg gap-2 py-1.5 px-3 h-8 bg-n-alpha-2 hover:bg-n-alpha-1 active:bg-n-alpha-1"
+    class="inline-flex relative items-center rounded-lg gap-2 py-1.5 px-3 h-8 bg-n-alpha-2 hover:bg-n-alpha-1 active:bg-n-alpha-1 flex-shrink-0"
     @click="openDatePicker"
   >
-    <fluent-icon class="text-n-slate-12" icon="calendar" size="16" />
-    <span class="text-sm font-medium text-n-slate-12">
+    <Icon
+      icon="i-lucide-calendar-range"
+      class="text-n-slate-11 size-3.5 flex-shrink-0"
+    />
+    <span class="text-sm font-medium text-n-slate-12 truncate">
       {{ $t(activeDateRange) }}
     </span>
-    <span class="text-sm font-medium text-n-slate-11">
+    <span class="text-sm font-medium text-n-slate-11 truncate">
       {{ formatDateRange }}
     </span>
-    <fluent-icon class="text-n-slate-12" icon="chevron-down" size="14" />
+    <Icon
+      icon="i-lucide-chevron-down"
+      class="text-n-slate-12 size-4 flex-shrink-0"
+    />
   </button>
 </template>

@@ -213,7 +213,7 @@ const closeDatePicker = () => {
 </script>
 
 <template>
-  <div v-on-clickaway="closeDatePicker" class="relative font-inter">
+  <div class="relative flex-shrink-0 font-inter">
     <DatePickerButton
       :selected-start-date="selectedStartDate"
       :selected-end-date="selectedEndDate"
@@ -222,6 +222,7 @@ const closeDatePicker = () => {
     />
     <div
       v-if="showDatePicker"
+      v-on-clickaway="closeDatePicker"
       class="flex absolute top-9 ltr:left-0 rtl:right-0 z-30 shadow-md select-none w-[880px] h-[490px] rounded-2xl bg-n-alpha-3 backdrop-blur-[100px] border-0 outline outline-1 outline-n-container"
     >
       <CalendarDateRange
