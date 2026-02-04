@@ -352,13 +352,9 @@ ActiveRecord::Schema[7.1].define(version: 2026_01_30_061021) do
     t.datetime "updated_at", null: false
     t.integer "status", default: 0, null: false
     t.jsonb "metadata", default: {}
-    t.datetime "last_crawled_at"
-    t.integer "refresh_interval_days", default: 7
-    t.datetime "next_refresh_at"
     t.index ["account_id"], name: "index_captain_documents_on_account_id"
     t.index ["assistant_id", "external_link"], name: "index_captain_documents_on_assistant_id_and_external_link", unique: true
     t.index ["assistant_id"], name: "index_captain_documents_on_assistant_id"
-    t.index ["status", "next_refresh_at"], name: "index_captain_documents_on_status_and_next_refresh_at"
     t.index ["status"], name: "index_captain_documents_on_status"
   end
 
@@ -382,9 +378,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_01_30_061021) do
     t.bigint "account_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "default_scenario_key"
     t.index ["account_id"], name: "index_captain_scenarios_on_account_id"
-    t.index ["assistant_id", "default_scenario_key"], name: "idx_captain_scenarios_assistant_default_key", unique: true, where: "(default_scenario_key IS NOT NULL)"
     t.index ["assistant_id", "enabled"], name: "index_captain_scenarios_on_assistant_id_and_enabled"
     t.index ["assistant_id"], name: "index_captain_scenarios_on_assistant_id"
     t.index ["enabled"], name: "index_captain_scenarios_on_enabled"
@@ -687,8 +681,6 @@ ActiveRecord::Schema[7.1].define(version: 2026_01_30_061021) do
     t.datetime "waiting_since"
     t.text "cached_label_list"
     t.bigint "assignee_agent_bot_id"
-    t.text "cached_summary"
-    t.datetime "cached_summary_at"
     t.index ["account_id", "display_id"], name: "index_conversations_on_account_id_and_display_id", unique: true
     t.index ["account_id", "id"], name: "index_conversations_on_id_and_account_id"
     t.index ["account_id", "inbox_id", "status", "assignee_id"], name: "conv_acid_inbid_stat_asgnid_idx"
