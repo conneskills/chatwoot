@@ -6,7 +6,7 @@ import keyboardEventListenerMixins from 'shared/mixins/keyboardEventListenerMixi
 
 import ReplyBottomPanel from 'dashboard/components/widgets/WootWriter/ReplyBottomPanel.vue';
 import AttachmentPreview from 'dashboard/components/widgets/AttachmentsPreview.vue';
-import ReplyTopPanel from 'dashboard/components/widgets/WootWriter/ReplyTopPanel.vue';
+import LiteReplyTopPanel from './LiteReplyTopPanel.vue';
 import { REPLY_EDITOR_MODES } from 'dashboard/components/widgets/WootWriter/constants';
 import WootMessageEditor from 'dashboard/components/widgets/WootWriter/Editor.vue';
 
@@ -18,7 +18,7 @@ import { extractTextFromMarkdown } from 'dashboard/helper/editorHelper';
 export default {
   components: {
     AttachmentPreview,
-    ReplyTopPanel,
+    LiteReplyTopPanel,
     ReplyBottomPanel,
     WootMessageEditor,
   },
@@ -118,10 +118,7 @@ export default {
       return window.__EDITOR_DISABLE_UPLOAD__ !== true;
     },
     replyButtonLabel() {
-      if (this.isPrivate) {
-        return this.$t('CONVERSATION.REPLYBOX.CREATE');
-      }
-      return this.$t('CONVERSATION.REPLYBOX.SEND');
+      return '↑';
     },
     replyBoxClass() {
       return {
@@ -387,9 +384,8 @@ export default {
 
 <template>
   <div ref="replyEditor" class="reply-box" :class="replyBoxClass">
-    <ReplyTopPanel
+    <LiteReplyTopPanel
       :mode="replyType"
-      disable-popout
       :is-message-length-reaching-threshold="isMessageLengthReachingThreshold"
       :characters-remaining="charactersRemaining"
       @set-reply-mode="setReplyMode"
