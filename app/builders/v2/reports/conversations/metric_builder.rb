@@ -1,10 +1,5 @@
 class V2::Reports::Conversations::MetricBuilder < V2::Reports::Conversations::BaseReportBuilder
-  # Mapping from metric keys to canonical hidden metric names
-  METRIC_TO_HIDDEN_KEY = {
-    'incoming_messages_count' => 'incoming_messages_count',
-    'outgoing_messages_count' => 'outgoing_messages_count',
-    'reply_time' => 'reply_time'
-  }.freeze
+  HIDEABLE_METRICS = %w[incoming_messages_count outgoing_messages_count reply_time].freeze
 
   def summary
     {
@@ -38,9 +33,9 @@ class V2::Reports::Conversations::MetricBuilder < V2::Reports::Conversations::Ba
   end
 
   def metric_hidden?(metric)
-    hidden_metrics = params[:hidden_metrics] || []
-    canonical_key = METRIC_TO_HIDDEN_KEY[metric]
-    canonical_key && hidden_metrics.include?(canonical_key)
+    return false unless HIDEABLE_METRICS.include?(metric)
+
+    (params[:hidden_metrics] || []).include?(metric)
   end
 
   def builder_params(metric)
