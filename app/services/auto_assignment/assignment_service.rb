@@ -55,7 +55,7 @@ class AutoAssignment::AssignmentService
     return agents if conversation&.team_id.blank?
 
     team = conversation.team
-    return nil if team.allow_auto_assign.blank?
+    return nil if team.blank? || team.allow_auto_assign.blank?
 
     team_member_ids = team.members.ids
     agents.where(user_id: team_member_ids)
