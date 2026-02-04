@@ -1,6 +1,7 @@
 <script>
 import V4Button from 'dashboard/components-next/button/Button.vue';
 import { useAlert, useTrack } from 'dashboard/composables';
+import { useHiddenMetrics } from 'dashboard/composables/useHiddenMetrics';
 import ReportFilters from './ReportFilters.vue';
 import ReportContainer from '../ReportContainer.vue';
 import { GROUP_BY_FILTER } from '../constants';
@@ -63,6 +64,10 @@ export default {
       default: null,
     },
   },
+  setup() {
+    const { filterVisibleReportKeys } = useHiddenMetrics();
+    return { filterVisibleReportKeys };
+  },
   data() {
     return {
       from: 0,
@@ -82,7 +87,7 @@ export default {
       return this.type === 'agent';
     },
     reportKeys() {
-      return {
+      const allKeys = {
         CONVERSATIONS: 'conversations_count',
         ...(!this.isAgentType && {
           INCOMING_MESSAGES: 'incoming_messages_count',
@@ -93,6 +98,8 @@ export default {
         RESOLUTION_COUNT: 'resolutions_count',
         REPLY_TIME: 'reply_time',
       };
+      // Filter out hidden metrics
+      return this.filterVisibleReportKeys(allKeys);
     },
   },
   mounted() {
