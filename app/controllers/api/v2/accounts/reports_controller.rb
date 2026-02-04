@@ -15,11 +15,11 @@ class Api::V2::Accounts::ReportsController < Api::V1::Accounts::BaseController
   end
 
   def summary
-    render json: filter_summary_with_previous(build_summary(:summary))
+    render json: build_summary(:summary)
   end
 
   def bot_summary
-    render json: filter_summary_with_previous(build_summary(:bot_summary))
+    render json: build_summary(:bot_summary)
   end
 
   def agents
@@ -107,7 +107,8 @@ class Api::V2::Accounts::ReportsController < Api::V1::Accounts::BaseController
     common_params.merge({
                           since: range[:current][:since],
                           until: range[:current][:until],
-                          timezone_offset: params[:timezone_offset]
+                          timezone_offset: params[:timezone_offset],
+                          hidden_metrics: hidden_metrics
                         })
   end
 
@@ -115,7 +116,8 @@ class Api::V2::Accounts::ReportsController < Api::V1::Accounts::BaseController
     common_params.merge({
                           since: range[:previous][:since],
                           until: range[:previous][:until],
-                          timezone_offset: params[:timezone_offset]
+                          timezone_offset: params[:timezone_offset],
+                          hidden_metrics: hidden_metrics
                         })
   end
 
