@@ -2,6 +2,7 @@
 import { ref, computed, onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useStore } from 'vuex';
+import { useRoute, useRouter } from 'vue-router';
 import { getUnixStartOfDay, getUnixEndOfDay } from 'helpers/DateHelper';
 import subDays from 'date-fns/subDays';
 import differenceInDays from 'date-fns/differenceInDays';
@@ -9,6 +10,11 @@ import ActiveFilterChip from './Filters/v3/ActiveFilterChip.vue';
 import WootDatePicker from 'dashboard/components/ui/DatePicker/DatePicker.vue';
 import ToggleSwitch from 'dashboard/components-next/switch/Switch.vue';
 import { GROUP_BY_FILTER } from '../constants';
+import { DATE_RANGE_TYPES } from 'dashboard/components/ui/DatePicker/helpers/DatePickerHelper';
+import {
+  generateReportURLParams,
+  parseReportURLParams,
+} from '../helpers/reportFilterHelper';
 
 const props = defineProps({
   filterType: {
@@ -40,6 +46,8 @@ const emit = defineEmits(['filterChange']);
 
 const { t } = useI18n();
 const store = useStore();
+const route = useRoute();
+const router = useRouter();
 
 const buildReportFilterList = (items, type) => {
   if (!Array.isArray(items)) return [];
@@ -56,7 +64,7 @@ const getReportFilterKey = filterType => {
     teams: 'team_id',
     inboxes: 'inbox_id',
     labels: 'label_id',
-    agents: 'agent_ids',
+    agents: 'agent_id',
   };
   return keyMap[filterType] || '';
 };
@@ -67,6 +75,7 @@ const showSubDropdownMenu = ref(false);
 const showGroupByDropdown = ref(false);
 const activeFilterType = ref('');
 const customDateRange = ref([subDays(new Date(), 6), new Date()]);
+const selectedDateRange = ref(DATE_RANGE_TYPES.LAST_7_DAYS);
 const businessHoursSelected = ref(false);
 const groupBy = ref(GROUP_BY_FILTER[1]);
 const groupByfilterItemsList = ref([{ id: 1, name: 'Day' }]);
@@ -159,6 +168,18 @@ const selectedFilterName = computed(() => {
   return selectedItem?.name || defaultFilterLabel.value;
 });
 
+const updateURLParams = () => {
+  const params = generateReportURLParams({
+    from: from.value,
+    to: to.value,
+    businessHours: businessHoursSelected.value,
+    groupBy: isGroupByPossible.value ? groupBy.value.id : null,
+    range: selectedDateRange.value,
+  });
+
+  router.replace({ query: { ...params } });
+};
+
 const emitChange = () => {
   const payload = {
     from: from.value,
@@ -166,8 +187,11 @@ const emitChange = () => {
     businessHours: businessHoursSelected.value,
   };
 
-  if (props.showGroupBy && isGroupByPossible.value) {
-    payload.groupBy = groupBy.value;
+  if (props.showGroupBy) {
+    // Always emit groupBy, default to day when range is too short
+    payload.groupBy = isGroupByPossible.value
+      ? groupBy.value
+      : GROUP_BY_FILTER[1];
   }
 
   if (props.showEntityFilter) {
@@ -182,6 +206,7 @@ const emitChange = () => {
     }
   }
 
+  updateURLParams();
   emit('filterChange', payload);
 };
 
@@ -201,16 +226,29 @@ const addFilter = item => {
   appliedFilters.value[filterKey] = item.id;
   closeActiveFilterDropdown();
   emitChange();
-};
 
-const removeFilter = () => {
-  const filterKey = getFilterKey();
-  appliedFilters.value[filterKey] = null;
-  emitChange();
+  // Navigate to the new entity's route
+  const routeNameMap = {
+    teams: 'team_reports_show',
+    inboxes: 'inbox_reports_show',
+    labels: 'label_reports_show',
+    agents: 'agent_reports_show',
+  };
+
+  const routeName = routeNameMap[props.filterType];
+  if (routeName) {
+    router.push({
+      name: routeName,
+      params: { ...route.params, id: item.id },
+      query: route.query,
+    });
+  }
 };
 
 const onDateRangeChange = value => {
-  customDateRange.value = value;
+  const [startDate, endDate, rangeType] = value;
+  customDateRange.value = [startDate, endDate];
+  selectedDateRange.value = rangeType || DATE_RANGE_TYPES.CUSTOM_RANGE;
   groupByfilterItemsList.value = fetchFilterItems();
   const filterItems = groupByfilterItemsList.value.filter(
     item => item.id === groupBy.value.id
@@ -239,7 +277,42 @@ const closeGroupByDropdown = () => {
   showGroupByDropdown.value = false;
 };
 
+const initializeFromURL = () => {
+  const urlParams = parseReportURLParams(route.query);
+
+  // Set the range type first
+  if (urlParams.range) {
+    selectedDateRange.value = urlParams.range;
+  }
+
+  // Restore dates from URL if available
+  if (urlParams.from && urlParams.to) {
+    customDateRange.value = [
+      new Date(urlParams.from * 1000),
+      new Date(urlParams.to * 1000),
+    ];
+  }
+
+  if (urlParams.businessHours) {
+    businessHoursSelected.value = urlParams.businessHours;
+  }
+
+  if (urlParams.groupBy) {
+    const groupByValue = GROUP_BY_FILTER[urlParams.groupBy];
+    if (groupByValue) {
+      groupBy.value = groupByValue;
+    }
+  }
+
+  // Initialize entity filter from route params (not URL query)
+  if (props.showEntityFilter && route.params.id) {
+    const filterKey = getFilterKey();
+    appliedFilters.value[filterKey] = Number(route.params.id);
+  }
+};
+
 onMounted(() => {
+  initializeFromURL();
   groupByfilterItemsList.value = fetchFilterItems();
   emitChange();
 });
@@ -247,7 +320,11 @@ onMounted(() => {
 
 <template>
   <div class="flex flex-col w-full gap-3 lg:flex-row">
-    <WootDatePicker @date-range-changed="onDateRangeChange" />
+    <WootDatePicker
+      v-model:date-range="customDateRange"
+      v-model:range-type="selectedDateRange"
+      @date-range-changed="onDateRangeChange"
+    />
 
     <div class="flex gap-2 items-center w-full">
       <ActiveFilterChip
@@ -264,7 +341,6 @@ onMounted(() => {
         @toggle-dropdown="openActiveFilterDropdown"
         @close-dropdown="closeActiveFilterDropdown"
         @add-filter="addFilter"
-        @remove-filter="removeFilter"
       />
 
       <ActiveFilterChip
