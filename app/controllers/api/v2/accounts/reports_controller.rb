@@ -1,21 +1,25 @@
 class Api::V2::Accounts::ReportsController < Api::V1::Accounts::BaseController
   include Api::V2::Accounts::ReportsHelper
   include Api::V2::Accounts::HeatmapHelper
+  include Reports::MetricFilter
 
   before_action :check_authorization
 
   def index
+    # Return empty timeseries array for hidden metrics (preserves expected response shape)
+    return render json: [] if metric_hidden?(params[:metric])
+
     builder = V2::Reports::Conversations::ReportBuilder.new(Current.account, report_params)
     data = builder.timeseries
     render json: data
   end
 
   def summary
-    render json: build_summary(:summary)
+    render json: filter_summary_with_previous(build_summary(:summary))
   end
 
   def bot_summary
-    render json: build_summary(:bot_summary)
+    render json: filter_summary_with_previous(build_summary(:bot_summary))
   end
 
   def agents

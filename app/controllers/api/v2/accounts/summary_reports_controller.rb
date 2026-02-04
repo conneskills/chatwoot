@@ -1,4 +1,6 @@
 class Api::V2::Accounts::SummaryReportsController < Api::V1::Accounts::BaseController
+  include Reports::MetricFilter
+
   before_action :check_authorization
   before_action :prepare_builder_params, only: [:agent, :team, :inbox, :label, :channel]
 
@@ -40,7 +42,7 @@ class Api::V2::Accounts::SummaryReportsController < Api::V1::Accounts::BaseContr
 
   def render_report_with(builder_class)
     builder = builder_class.new(account: Current.account, params: @builder_params)
-    render json: builder.build
+    render json: filter_hidden_metrics_from_array(builder.build)
   end
 
   def permitted_params
