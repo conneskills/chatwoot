@@ -99,10 +99,10 @@ useInfiniteScroll(messageListRef, useThrottleFn(fetchMore, 1000), {
 </script>
 
 <template>
-  <div class="relative">
+  <div class="relative h-full">
     <ul
       ref="messageListRef"
-      class="px-4 pt-4 flex flex-col-reverse pb-60 bg-n-background overflow-scroll h-screen"
+      class="px-4 pt-4 flex flex-col-reverse pb-60 bg-n-background overflow-scroll h-full"
     >
       <div
         v-if="isAnyoneTyping"
