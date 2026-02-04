@@ -1,18 +1,16 @@
 import { computed } from 'vue';
-import { useStore } from 'dashboard/composables/store';
+import { useAccount } from './useAccount';
 
-// Bidirectional alias mapping for consistency
+// Alias mapping for consistency (canonical form is reply_time)
 const METRIC_ALIASES = {
   avg_reply_time: 'reply_time',
 };
 
 export function useHiddenMetrics() {
-  const store = useStore();
+  const { currentAccount } = useAccount();
 
   const hiddenMetrics = computed(() => {
-    return (
-      store.getters.getCurrentAccount?.settings?.report_hidden_metrics || []
-    );
+    return currentAccount.value?.settings?.report_hidden_metrics || [];
   });
 
   const isMetricHidden = metricKey => {
