@@ -1,3 +1,11 @@
+# Evaluates whether a conversation is complete and can be auto-resolved.
+# Used by InboxPendingConversationsResolutionJob to determine if inactive
+# conversations should be resolved or handed off to human agents.
+#
+# NOTE: This service intentionally does NOT count toward Captain usage limits.
+# The response excludes the :message key that Enterprise::Captain::BaseTaskService
+# checks for usage tracking. This is an internal operational evaluation,
+# not a customer-facing value-add, so we don't charge for it.
 class Captain::ConversationCompletionService < Captain::BaseTaskService
   RESPONSE_SCHEMA = {
     type: 'object',
