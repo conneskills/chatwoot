@@ -134,7 +134,7 @@ export default {
     'selectContentTemplate',
     'toggleQuotedReply',
   ],
-  setup() {
+  setup(props) {
     const { setSignatureFlagForInbox, fetchSignatureFlagFromUISettings } =
       useUISettings();
 
@@ -143,6 +143,9 @@ export default {
     const keyboardEvents = {
       '$mod+Alt+KeyA': {
         action: () => {
+          // Skip if editor is disabled (e.g., WhatsApp 24-hour window expired)
+          if (props.isEditorDisabled) return;
+
           // TODO: This is really hacky, we need to replace the file picker component with
           // a custom one, where the logic and the component markup is isolated.
           // Once we have the custom component, we can remove the hacky logic below.
@@ -150,7 +153,7 @@ export default {
           const uploadTriggerButton = document.querySelector(
             '#conversationAttachment'
           );
-          uploadTriggerButton.click();
+          if (uploadTriggerButton) uploadTriggerButton.click();
         },
         allowOnFocusedInput: true,
       },
