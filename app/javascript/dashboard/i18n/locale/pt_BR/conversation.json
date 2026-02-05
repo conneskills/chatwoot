@@ -32,7 +32,7 @@
     "LOADING_CONVERSATIONS": "Carregando conversas",
     "CANNOT_REPLY": "Você não pode responder porque",
     "24_HOURS_WINDOW": "Restrições de janela de mensagem de 24 horas",
-    "48_HOURS_WINDOW": "Restrição de janela de mensagem de 48 horas",
+    "48_HOURS_WINDOW": "Restrição da janela de mensagens de 48 horas",
     "API_HOURS_WINDOW": "Você só pode responder a esta conversa em {hours} horas",
     "NOT_ASSIGNED_TO_YOU": "Esta conversa não está atribuída a você. Gostaria de atribuir esta conversa a você mesmo?",
     "ASSIGN_TO_ME": "Atribuir a mim",
