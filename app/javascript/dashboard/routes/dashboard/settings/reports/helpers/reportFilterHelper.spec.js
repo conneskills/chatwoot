@@ -1,6 +1,9 @@
 import {
   generateReportURLParams,
   parseReportURLParams,
+  parseFilterURLParams,
+  generateFilterURLParams,
+  generateCompleteURLParams,
 } from './reportFilterHelper';
 
 describe('reportFilterHelper', () => {
@@ -208,6 +211,140 @@ describe('reportFilterHelper', () => {
       expect(parsed.businessHours).toBe(original.businessHours);
       expect(parsed.groupBy).toBe(original.groupBy);
       expect(parsed.range).toBe(original.range);
+    });
+  });
+
+  describe('parseFilterURLParams', () => {
+    it('parses all filter params as numbers', () => {
+      const result = parseFilterURLParams({
+        agent_id: '123',
+        inbox_id: '456',
+        team_id: '789',
+        sla_policy_id: '101',
+        rating: '4',
+      });
+
+      expect(result).toEqual({
+        agent_id: 123,
+        inbox_id: 456,
+        team_id: 789,
+        sla_policy_id: 101,
+        label: null,
+        rating: 4,
+      });
+    });
+
+    it('parses label as string', () => {
+      const result = parseFilterURLParams({
+        label: 'bug',
+      });
+
+      expect(result.label).toBe('bug');
+    });
+
+    it('returns null for missing parameters', () => {
+      const result = parseFilterURLParams({});
+
+      expect(result).toEqual({
+        agent_id: null,
+        inbox_id: null,
+        team_id: null,
+        sla_policy_id: null,
+        label: null,
+        rating: null,
+      });
+    });
+  });
+
+  describe('generateFilterURLParams', () => {
+    it('includes only non-null filter values', () => {
+      const params = generateFilterURLParams({
+        agent_id: 123,
+        inbox_id: null,
+        team_id: 456,
+        rating: null,
+      });
+
+      expect(params).toEqual({
+        agent_id: 123,
+        team_id: 456,
+      });
+    });
+
+    it('includes label when present', () => {
+      const params = generateFilterURLParams({
+        label: 'bug',
+      });
+
+      expect(params).toEqual({
+        label: 'bug',
+      });
+    });
+
+    it('returns empty object when all values are null', () => {
+      const params = generateFilterURLParams({
+        agent_id: null,
+        inbox_id: null,
+        team_id: null,
+      });
+
+      expect(params).toEqual({});
+    });
+  });
+
+  describe('generateCompleteURLParams', () => {
+    it('merges date and filter params', () => {
+      const params = generateCompleteURLParams({
+        from: 1738607400,
+        to: 1770229799,
+        range: 'last7days',
+        filters: {
+          agent_id: 123,
+          inbox_id: 456,
+        },
+      });
+
+      expect(params).toEqual({
+        from: 1738607400,
+        to: 1770229799,
+        range: 'last7days',
+        agent_id: 123,
+        inbox_id: 456,
+      });
+    });
+
+    it('handles empty filters', () => {
+      const params = generateCompleteURLParams({
+        from: 1738607400,
+        to: 1770229799,
+        range: 'last7days',
+        filters: {},
+      });
+
+      expect(params).toEqual({
+        from: 1738607400,
+        to: 1770229799,
+        range: 'last7days',
+      });
+    });
+
+    it('excludes null filter values', () => {
+      const params = generateCompleteURLParams({
+        from: 1738607400,
+        to: 1770229799,
+        filters: {
+          agent_id: 123,
+          inbox_id: null,
+          team_id: 456,
+        },
+      });
+
+      expect(params).toEqual({
+        from: 1738607400,
+        to: 1770229799,
+        agent_id: 123,
+        team_id: 456,
+      });
     });
   });
 });
