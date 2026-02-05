@@ -31,6 +31,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    isEditorDisabled: {
+      type: Boolean,
+      default: false,
+    },
     isMessageLengthReachingThreshold: {
       type: Boolean,
       default: () => false,
@@ -144,7 +148,7 @@ export default {
       <div class="relative">
         <NextButton
           ghost
-          :disabled="disabled"
+          :disabled="disabled || isEditorDisabled"
           :class="{
             'text-n-violet-9 hover:enabled:!bg-n-violet-3': !showCopilotMenu,
             'text-n-violet-9 bg-n-violet-3': showCopilotMenu,

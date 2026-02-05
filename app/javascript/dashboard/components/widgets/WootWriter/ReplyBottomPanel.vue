@@ -122,6 +122,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    isEditorDisabled: {
+      type: Boolean,
+      default: false,
+    },
   },
   emits: [
     'replaceText',
@@ -177,9 +181,11 @@ export default {
       };
     },
     showAttachButton() {
+      if (this.isEditorDisabled) return false;
       return this.showFileUpload || this.isNote;
     },
     showAudioRecorderButton() {
+      if (this.isEditorDisabled) return false;
       if (this.isALineChannel) {
         return false;
       }
@@ -197,6 +203,7 @@ export default {
       );
     },
     showAudioPlayStopButton() {
+      if (this.isEditorDisabled) return false;
       return this.showAudioRecorder && this.isRecordingAudio;
     },
     isInstagramDM() {
@@ -236,6 +243,7 @@ export default {
       }
     },
     showMessageSignatureButton() {
+      if (this.isEditorDisabled) return false;
       return !this.isOnPrivateNote;
     },
     sendWithSignature() {
@@ -280,6 +288,7 @@ export default {
   <div class="flex justify-between p-3" :class="wrapClass">
     <div class="left-wrap">
       <NextButton
+        v-if="!isEditorDisabled"
         v-tooltip.top-end="$t('CONVERSATION.REPLYBOX.TIP_EMOJI_ICON')"
         icon="i-ph-smiley-sticker"
         slate
@@ -288,6 +297,7 @@ export default {
         @click="toggleEmojiPicker"
       />
       <FileUpload
+        v-if="showAttachButton"
         ref="uploadRef"
         v-tooltip.top-end="$t('CONVERSATION.REPLYBOX.TIP_ATTACH_ICON')"
         input-id="conversationAttachment"

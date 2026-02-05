@@ -206,6 +206,7 @@ export default {
       return this.maxLength - this.message.length;
     },
     isReplyButtonDisabled() {
+      if (this.isEditorDisabled) return true;
       if (this.isATwitterInbox) return true;
       if (this.hasAttachments || this.hasRecordedAudio) return false;
 
@@ -661,6 +662,9 @@ export default {
     onPaste(e) {
       // Don't handle paste if compose new conversation modal is open
       if (this.newConversationModalActive) return;
+
+      // Don't handle paste if editor is disabled
+      if (this.isEditorDisabled) return;
 
       // Filter valid files (non-zero size)
       Array.from(e.clipboardData.files)
@@ -1142,6 +1146,7 @@ export default {
         (copilot.isActive.value && copilot.isButtonDisabled.value) ||
         showAudioRecorderEditor
       "
+      :is-editor-disabled="isEditorDisabled"
       :is-message-length-reaching-threshold="isMessageLengthReachingThreshold"
       :characters-remaining="charactersRemaining"
       :popout-reply-box="popOutReplyBox"
@@ -1293,6 +1298,7 @@ export default {
         :is-recording-audio="isRecordingAudio"
         :is-send-disabled="isReplyButtonDisabled"
         :is-note="isPrivate"
+        :is-editor-disabled="isEditorDisabled"
         :on-file-upload="onFileUpload"
         :on-send="onSendReply"
         :conversation-type="conversationType"
