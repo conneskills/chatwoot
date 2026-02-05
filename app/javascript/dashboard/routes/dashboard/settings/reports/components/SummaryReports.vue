@@ -203,14 +203,14 @@ defineExpose({ downloadReports });
 </script>
 
 <template>
-  <ReportFilterSelector @filter-change="onFilterChange" />
+  <ReportFilterSelector :disabled="isLoading" @filter-change="onFilterChange" />
   <div
     class="relative flex-1 overflow-auto px-2 py-2 mt-5 shadow outline-1 outline outline-n-container rounded-xl bg-n-solid-2"
   >
     <Table :table="table" />
     <div
       v-if="isLoading"
-      class="absolute inset-0 flex items-center justify-center bg-n-alpha-1 rounded-xl"
+      class="absolute inset-0 flex justify-center pt-[200px] bg-n-alpha-1 rounded-xl"
     >
       <Spinner :size="32" class="text-n-brand" />
     </div>
