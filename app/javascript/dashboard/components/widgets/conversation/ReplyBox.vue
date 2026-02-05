@@ -414,6 +414,13 @@ export default {
     isDefaultEditorMode() {
       return !this.showAudioRecorderEditor && !this.copilot.isActive.value;
     },
+    isEditorDisabled() {
+      return (
+        this.isAWhatsAppChannel &&
+        !this.isOnPrivateNote &&
+        !this.currentChat.can_reply
+      );
+    },
   },
   watch: {
     currentChat(conversation, oldConversation) {
@@ -1210,6 +1217,7 @@ export default {
           :placeholder="messagePlaceHolder"
           :update-selection-with="updateEditorSelectionWith"
           :min-height="4"
+          :disabled="isEditorDisabled"
           enable-variables
           :variables="messageVariables"
           :signature="messageSignature"
