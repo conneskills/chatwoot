@@ -61,6 +61,11 @@ class Captain::InboxPendingConversationsResolutionJob < ApplicationJob
     create_private_note(conversation, inbox, "Auto-handoff: #{reason}")
     create_handoff_message(conversation, inbox)
     conversation.bot_handoff!
+    send_out_of_office_message_if_applicable(conversation)
+  end
+
+  def send_out_of_office_message_if_applicable(conversation)
+    ::MessageTemplates::Template::OutOfOffice.perform_if_applicable(conversation)
   end
 
   def create_private_note(conversation, inbox, content)
