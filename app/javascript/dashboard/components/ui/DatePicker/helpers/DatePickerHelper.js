@@ -36,6 +36,7 @@ export const dateRanges = [
   {
     label: 'DATE_PICKER.DATE_RANGE_OPTIONS.LAST_3_MONTHS',
     value: 'last3months',
+    separator: true,
   },
   {
     label: 'DATE_PICKER.DATE_RANGE_OPTIONS.LAST_6_MONTHS',
