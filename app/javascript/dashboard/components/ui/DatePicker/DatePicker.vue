@@ -1,11 +1,14 @@
 <script setup>
-import { ref, watch } from 'vue';
+import { ref, computed, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import {
   getActiveDateRange,
   moveCalendarDate,
   DATE_RANGE_TYPES,
   CALENDAR_TYPES,
   CALENDAR_PERIODS,
+  isNavigableRange,
+  getRangeAtOffset,
 } from './helpers/DatePickerHelper';
 import {
   isValid,
@@ -19,6 +22,7 @@ import {
   differenceInCalendarMonths,
   setMonth,
   setYear,
+  getWeek,
 } from 'date-fns';
 import { useAlert } from 'dashboard/composables';
 import DatePickerButton from './components/DatePickerButton.vue';
@@ -30,6 +34,7 @@ import CalendarWeek from './components/CalendarWeek.vue';
 import CalendarFooter from './components/CalendarFooter.vue';
 
 const emit = defineEmits(['dateRangeChanged']);
+const { t } = useI18n();
 
 const dateRange = defineModel('dateRange', {
   type: Array,
@@ -70,6 +75,27 @@ const endCurrentDate = ref(
 const selectingEndDate = ref(false);
 const selectedRange = ref(rangeType.value || LAST_7_DAYS);
 const hoveredEndDate = ref(null);
+const monthOffset = ref(0);
+
+const showMonthNavigation = computed(() =>
+  isNavigableRange(selectedRange.value)
+);
+const canNavigateNext = computed(() => monthOffset.value < 0);
+
+const navigationLabel = computed(() => {
+  const range = selectedRange.value;
+  if (range === DATE_RANGE_TYPES.MONTH_TO_DATE) {
+    return new Intl.DateTimeFormat(navigator.language, {
+      month: 'long',
+    }).format(selectedStartDate.value);
+  }
+  if (range === DATE_RANGE_TYPES.THIS_WEEK) {
+    if (monthOffset.value === 0) return null;
+    const weekNumber = getWeek(selectedStartDate.value, { weekStartsOn: 1 });
+    return t('DATE_PICKER.WEEK_NUMBER', { weekNumber });
+  }
+  return null;
+});
 
 const manualStartDate = ref(selectedStartDate.value);
 const manualEndDate = ref(selectedEndDate.value);
@@ -81,6 +107,7 @@ watch(
   ([newRangeType, newDateRange]) => {
     if (newRangeType && newRangeType !== selectedRange.value) {
       selectedRange.value = newRangeType;
+      monthOffset.value = 0;
 
       // If rangeType changes without dateRange, recompute dates from the range
       if (!newDateRange && newRangeType !== CUSTOM_RANGE) {
@@ -93,7 +120,8 @@ watch(
     }
 
     // When parent provides new dateRange (e.g., from URL params)
-    if (newDateRange?.[0] && newDateRange?.[1]) {
+    // Skip if navigating with arrows — offset controls dates in that case
+    if (newDateRange?.[0] && newDateRange?.[1] && monthOffset.value === 0) {
       selectedStartDate.value = startOfDay(newDateRange[0]);
       selectedEndDate.value = endOfDay(newDateRange[1]);
 
@@ -122,6 +150,7 @@ watch(
 
 const setDateRange = range => {
   selectedRange.value = range.value;
+  monthOffset.value = 0;
   const { start, end } = getActiveDateRange(range.value, currentDate.value);
   selectedStartDate.value = start;
   selectedEndDate.value = end;
@@ -131,6 +160,26 @@ const setDateRange = range => {
   endCurrentDate.value = isSameMonth(start, end)
     ? startOfMonth(addMonths(start, 1))
     : startOfMonth(end);
+};
+
+const navigateMonth = direction => {
+  monthOffset.value += direction === 'prev' ? -1 : 1;
+  if (monthOffset.value > 0) monthOffset.value = 0;
+
+  const { start, end } = getRangeAtOffset(
+    selectedRange.value,
+    monthOffset.value,
+    currentDate.value
+  );
+  selectedStartDate.value = start;
+  selectedEndDate.value = end;
+
+  startCurrentDate.value = startOfMonth(start);
+  endCurrentDate.value = isSameMonth(start, end)
+    ? startOfMonth(addMonths(start, 1))
+    : startOfMonth(end);
+
+  emit('dateRangeChanged', [start, end, selectedRange.value]);
 };
 
 const moveCalendar = (calendar, direction, period = MONTH) => {
@@ -224,6 +273,7 @@ const resetDatePicker = () => {
     : startOfMonth(endDate);
   selectingEndDate.value = false;
   selectedRange.value = LAST_7_DAYS;
+  monthOffset.value = 0;
   calendarViews.value = { start: WEEK, end: WEEK };
 };
 
@@ -270,7 +320,11 @@ const closeDatePicker = () => {
       :selected-start-date="selectedStartDate"
       :selected-end-date="selectedEndDate"
       :selected-range="selectedRange"
+      :show-month-navigation="showMonthNavigation"
+      :can-navigate-next="canNavigateNext"
+      :navigation-label="navigationLabel"
       @open="toggleDatePicker"
+      @navigate-month="navigateMonth"
     />
     <div
       v-if="showDatePicker"
