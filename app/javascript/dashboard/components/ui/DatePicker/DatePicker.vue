@@ -122,10 +122,10 @@ watch(
 
       // If rangeType changes without dateRange, recompute dates from the range
       if (!newDateRange && newRangeType !== CUSTOM_RANGE) {
-        const activeDates = getActiveDateRange(newRangeType);
+        const activeDates = getActiveDateRange(newRangeType, currentDate.value);
         if (activeDates) {
-          selectedStartDate.value = startOfDay(activeDates.startDate);
-          selectedEndDate.value = endOfDay(activeDates.endDate);
+          selectedStartDate.value = startOfDay(activeDates.start);
+          selectedEndDate.value = endOfDay(activeDates.end);
         }
       }
     }
