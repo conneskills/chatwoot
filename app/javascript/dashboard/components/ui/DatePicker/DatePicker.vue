@@ -347,7 +347,11 @@ const toggleDatePicker = () => {
 };
 
 const closeDatePicker = () => {
-  showDatePicker.value = false;
+  if (isValid(selectedStartDate.value) && isValid(selectedEndDate.value)) {
+    emitDateRange();
+  } else {
+    showDatePicker.value = false;
+  }
 };
 </script>
 
