@@ -1,0 +1,19 @@
+steps:
+- name: gcr.io/cloud-builders/docker
+  args:
+  - build
+  - -t
+  - us-central1-docker.pkg.dev/$PROJECT_ID/chatwoot/chatwoot:latest
+  - -f
+  - docker/Dockerfile.cloudrun
+  - .
+- name: gcr.io/cloud-builders/docker
+  args:
+  - push
+  - us-central1-docker.pkg.dev/$PROJECT_ID/chatwoot/chatwoot:latest
+images:
+- us-central1-docker.pkg.dev/$PROJECT_ID/chatwoot/chatwoot:latest
+serviceAccount: projects/conneskills-ai-platform/serviceAccounts/ai-agent-onboarding@conneskills-ai-platform.iam.gserviceaccount.com
+options:
+  logging: CLOUD_LOGGING_ONLY
+timeout: 1200s
