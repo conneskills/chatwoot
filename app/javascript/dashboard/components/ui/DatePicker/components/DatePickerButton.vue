@@ -36,19 +36,15 @@ const formatDateRange = computed(() => {
     return 'Select a date range';
   }
 
-  const formatString = isSameYear(startDate, endDate)
-    ? 'MMM d' // Same year: "Apr 1"
-    : 'MMM d yyyy'; // Different years: "Apr 1 2025"
+  const now = new Date();
+  const bothCurrentYear =
+    isSameYear(startDate, now) && isSameYear(endDate, now);
 
-  if (isSameYear(startDate, new Date()) && isSameYear(endDate, new Date())) {
-    // Both dates are in the current year
+  if (bothCurrentYear) {
     return `${format(startDate, 'MMM d')} - ${format(endDate, 'MMM d')}`;
   }
-  // At least one date is not in the current year
-  return `${format(startDate, formatString)} - ${format(
-    endDate,
-    formatString
-  )}`;
+
+  return `${format(startDate, 'MMM d yyyy')} - ${format(endDate, 'MMM d yyyy')}`;
 });
 
 const activeDateRange = computed(
