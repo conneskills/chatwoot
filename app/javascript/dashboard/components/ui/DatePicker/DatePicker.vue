@@ -20,6 +20,7 @@ import {
   addMonths,
   isSameMonth,
   differenceInCalendarMonths,
+  differenceInCalendarWeeks,
   setMonth,
   setYear,
   getWeek,
@@ -141,6 +142,26 @@ watch(
       endCurrentDate.value = isSameMonth(newDateRange[0], newDateRange[1])
         ? startOfMonth(addMonths(newDateRange[1], 1))
         : startOfMonth(newDateRange[1]);
+
+      // Recalculate offset so arrow navigation is relative to restored range
+      if (isNavigableRange(selectedRange.value)) {
+        const current = getActiveDateRange(
+          selectedRange.value,
+          currentDate.value
+        );
+        if (selectedRange.value === DATE_RANGE_TYPES.THIS_WEEK) {
+          monthOffset.value = differenceInCalendarWeeks(
+            newDateRange[0],
+            current.start,
+            { weekStartsOn: 1 }
+          );
+        } else {
+          monthOffset.value = differenceInCalendarMonths(
+            newDateRange[0],
+            current.start
+          );
+        }
+      }
     }
   },
   { immediate: true }
