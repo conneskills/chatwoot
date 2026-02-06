@@ -1,0 +1,14 @@
+FROM chatwoot/chatwoot:latest
+
+# Crear script de inicio
+RUN echo '#!/bin/sh' > /start.sh && \
+    echo 'set -e' >> /start.sh && \
+    echo 'echo "Running database migrations..."' >> /start.sh && \
+    echo 'bundle exec rails db:chatwoot_prepare' >> /start.sh && \
+    echo 'echo "Starting Rails and Sidekiq..."' >> /start.sh && \
+    echo 'bundle exec rails s -p $PORT -b 0.0.0.0 &' >> /start.sh && \
+    echo 'bundle exec sidekiq -C config/sidekiq.yml &' >> /start.sh && \
+    echo 'wait -n' >> /start.sh && \
+    chmod +x /start.sh
+
+CMD ["/start.sh"]
