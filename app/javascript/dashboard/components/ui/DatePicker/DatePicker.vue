@@ -144,6 +144,10 @@ watch(
         : startOfMonth(newDateRange[1]);
 
       // Recalculate offset so arrow navigation is relative to restored range
+      // TODO: When offset resolves to 0 (current period), the end date may be
+      // stale if the URL was saved on a previous day. "This month" / "This week"
+      // should show up-to-today dates for the current period. For now, the stale
+      // end date is shown until the user clicks an arrow or re-selects the range.
       if (isNavigableRange(selectedRange.value)) {
         const current = getActiveDateRange(
           selectedRange.value,
