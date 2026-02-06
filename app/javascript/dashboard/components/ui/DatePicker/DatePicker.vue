@@ -80,7 +80,15 @@ const monthOffset = ref(0);
 const showMonthNavigation = computed(() =>
   isNavigableRange(selectedRange.value)
 );
-const canNavigateNext = computed(() => monthOffset.value < 0);
+const canNavigateNext = computed(() => {
+  if (!isNavigableRange(selectedRange.value)) return false;
+  // Compare selected start to the current period's start to determine if we're in the past
+  const currentRange = getActiveDateRange(
+    selectedRange.value,
+    currentDate.value
+  );
+  return selectedStartDate.value < currentRange.start;
+});
 
 const navigationLabel = computed(() => {
   const range = selectedRange.value;
@@ -90,7 +98,10 @@ const navigationLabel = computed(() => {
     }).format(selectedStartDate.value);
   }
   if (range === DATE_RANGE_TYPES.THIS_WEEK) {
-    if (monthOffset.value === 0) return null;
+    const currentWeekRange = getActiveDateRange(range, currentDate.value);
+    const isCurrentWeek =
+      selectedStartDate.value.getTime() === currentWeekRange.start.getTime();
+    if (isCurrentWeek) return null;
     const weekNumber = getWeek(selectedStartDate.value, { weekStartsOn: 1 });
     return t('DATE_PICKER.WEEK_NUMBER', { weekNumber });
   }
@@ -210,6 +221,7 @@ const moveCalendar = (calendar, direction, period = MONTH) => {
 
 const selectDate = day => {
   selectedRange.value = CUSTOM_RANGE;
+  monthOffset.value = 0;
   if (!selectingEndDate.value || day < selectedStartDate.value) {
     selectedStartDate.value = day;
     selectedEndDate.value = null;
